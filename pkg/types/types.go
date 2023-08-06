@@ -24,3 +24,10 @@ type ValidateCookie struct {
 	Admin int
 	Username string
 }
+
+type Data struct {
+	UserName string
+	Books []map[string]interface{}
+	ReqBook []map[string]interface{}
+	AdminReq []map[string]interface{}		
+}

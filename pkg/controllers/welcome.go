@@ -49,7 +49,7 @@ func Welcome(writer http.ResponseWriter, request *http.Request) {
 		fmt.Println("============================")		
 
 		// LogIn(writer , request)
-		t := views.LogIn()
+		t := views.StartPage()
 		writer.WriteHeader(http.StatusOK)
 		t.Execute(writer, nil)
 	}

@@ -9,10 +9,6 @@ func GetAdmin() *template.Template {
 	return temp
 }
 
-func Checkin() *template.Template {
-	temp := template.Must(template.ParseFiles("templates/screens/checkin.html"))
-	return temp
-}
 
 func AdminAdd() *template.Template {
 	temp := template.Must(template.ParseFiles("templates/screens/addBooks.html"))
@@ -23,4 +19,14 @@ func AdminAdd() *template.Template {
 func AdminCheckout() *template.Template {
 	temp := template.Must(template.ParseFiles("templates/screens/checkout.html"))
 	return temp
+}
+
+func AdminRemove() *template.Template {
+	temp := template.Must(template.ParseFiles("templates/screens/removeBooks.html"))
+    return temp
+}
+
+func AdminChoose() *template.Template {
+	temp := template.Must(template.ParseFiles("templates/screens/choose.html"))
+    return temp
 }

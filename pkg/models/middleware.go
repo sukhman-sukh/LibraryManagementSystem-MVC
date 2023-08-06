@@ -3,7 +3,7 @@ package models
 import (
 	_ "github.com/go-sql-driver/mysql"
 	// "golang.org/x/crypto/bcrypt"
-	"lib-manager/pkg/views"
+	// "lib-manager/pkg/views"
 	"fmt"
 	// "database/sql"
 	// "context"
@@ -72,9 +72,10 @@ func Middleware(res http.ResponseWriter, req *http.Request ) (string,int , strin
 	defer rows.Close()
 	if(IsDbEmpty("cookie" , db)){
 		fmt.Println("NOthing in sessionID")
-		t := views.LogIn()
-		res.WriteHeader(http.StatusOK)
-		t.Execute(res, nil)
+		// t := views.LogIn()
+		// res.WriteHeader(http.StatusOK)
+		// t.Execute(res, nil)
+		return "NOthing in sessionID",0,"",0
 	}	
 	fmt.Println("sds1")
 	for rows.Next() {
@@ -95,9 +96,7 @@ func Middleware(res http.ResponseWriter, req *http.Request ) (string,int , strin
 	defer rows.Close()
 	if(IsDbEmpty("cookie" , db)){
 		fmt.Println("NOthing in sessionID")
-		t := views.LogIn()
-		res.WriteHeader(http.StatusOK)
-		t.Execute(res, nil)
+		return "NOthing in sessionID",0,"",0
 	}	
 	// fmt.Println("sds1")
 	for rows.Next() {
