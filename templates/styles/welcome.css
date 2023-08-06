@@ -1,0 +1,257 @@
+html{
+  scroll-behavior: smooth;
+}
+body
+{  
+    margin: 0%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* padding-top: 10%; */
+}
+
+.wlcmscrn{
+
+
+  scroll-snap-type: y mandatory;
+  overflow-y: scroll;
+  /* height: 100vh; */
+
+}
+section{
+  height:100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  scroll-snap-align: start;
+}
+.wlcm{  
+  background-image: url("../assets/lib_background.jpg");
+  background-size: contain;
+  background-repeat: none;
+} 
+
+#txt1{
+  position: absolute;
+  margin-top: -15%;
+  font-size: xxx-large;
+  color: #ffae00;
+  padding-left: 2%;
+  padding-right: 2%;
+  background-color: black;
+
+  overflow: hidden;
+  /* width: 5vw; */
+  border-right: .15em solid #ffae00; 
+  white-space: nowrap;
+  animation: 
+  type1 3s steps(45, end),
+  blink.75s step-end infinite;
+}
+#txt2{
+  position: absolute;
+  margin-top: -5%;
+  font-size: xx-large;
+  color: #ffae00;
+
+  padding-left: 2%;
+  padding-right: 2%;
+  background-color: black;
+
+  overflow: hidden;
+  /* width: 5vw; */
+  border-right: .15em solid #ffae00; 
+  white-space: nowrap;
+  animation: 
+  type2 3s steps(50, end),
+  blink.75s step-end infinite;
+}
+
+#txt3{
+  position: relative;
+  /* margin-left: 0%; */
+
+  font-size: xx-large;
+
+  /* padding-left: 2%;
+  padding-right: 2%;
+  background-color: wheat; */
+
+}
+#loginLink{
+  /* color: #00ffc8; */
+  position: relative;
+  font-size:x-large;
+  /* margin-top: 4.5%; */
+  margin-left: 5%;
+  
+  /* padding-left: 0%;
+  padding-right: 2%; */
+  /* background-color: black; */
+
+}
+#registerLink{
+  /* color: #00ffc8; */
+  position: relative;
+  font-size:x-large;
+  /* margin-top: 4.5%; */
+  /* margin-top: 33%; */
+  margin-left: 15%;
+
+  /* padding-left: 2%;
+  padding-right: 2%; */
+  /* background-color: black; */
+  
+}
+#links{
+  position: absolute;
+  margin-top: 35%;
+  height: 5vw;
+  width:35vw;
+  display: flex;
+  flex-direction: row;
+  padding-left: 2%;
+  /* justify-content: center; */
+  /* align-content: center; */
+  align-items: center;
+  /* height: fit-content; */
+  background-color: wheat;
+}
+
+#login{  
+  background-image: url("../assets/dack.jpg");
+  /* background-size: contain; */
+  background-repeat: none;
+} 
+
+#register{  
+  background-image: url("../assets/dack.jpg");
+  /* background-size: contain; */
+  background-repeat: none;
+} 
+
+
+
+.label{
+    font-size: xx-large;
+    font-weight: 300;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    
+}
+.inputField {
+    margin:5%;
+    width: 120%;
+    height: 400%;
+    padding: 5%;
+    border: none;
+    border-bottom: 0.1rem solid  black;
+    font-size:x-large;
+    /* background-color:skyblue; */
+
+}
+input:focus {
+    background-color: black;
+    color: white;
+  }
+
+  #submit {
+    position: absolute;
+    margin-top: 2%;
+    margin-left: 5% ;
+    display: inline-block;
+    padding: 1% 2%;
+    font-size: 180%;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    outline: none;
+    color: #fff;
+    background-color: #4CAF50;
+    border: none;
+    border-radius: 25%;
+    box-shadow: 0 9px #999;
+  }
+  
+  #submit:hover {background-color: #3e8e41}
+  
+  #submit:active {
+    background-color: #3e8e41;
+    box-shadow: 0 5px #666;
+    transform: translateY(4px);
+  }
+
+  #submitlgn {
+    position: absolute;
+    margin-top: 2%;
+    margin-left: 5% ;
+    display: inline-block;
+    padding: 1% 2%;
+    font-size: 180%;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    outline: none;
+    color: #fff;
+    background-color: #4CAF50;
+    border: none;
+    border-radius: 25%;
+    box-shadow: 0 9px #999;
+  }
+  
+  #submitlgn:hover {background-color: #3e8e41}
+  
+  #submitlgn:active {
+    background-color: #3e8e41;
+    box-shadow: 0 5px #666;
+    transform: translateY(4px);
+  }
+
+  #btnsubmit {
+    position: absolute;
+    /* margin-top: 5%; */
+    margin-left: 5% ;
+    display: inline-block;
+    padding: 1% 2%;
+    font-size: 180%;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    outline: none;
+    color: #fff;
+    background-color: #4CAF50;
+    border: none;
+    border-radius: 25%;
+    box-shadow: 0 9px #999;
+  }
+  
+  #btnsubmit:hover {background-color: #3e8e41;
+    cursor : not-allowed;}
+  
+  #btnsubmit:active {
+    background-color: #3e8e41;
+    box-shadow: 0 5px #666;
+    transform: translateY(4px);
+  }
+
+  #invalid{
+    display:none
+  }
+
+  #mismatch{
+    display:none
+  }
+
+  @keyframes type1{
+    from{width : 0}
+    to{ width : 10%}
+}
+@keyframes type2{
+  from{width : 0}
+  to{ width : 30%}
+}
+@keyframes blink
+{
+    from,to{border-color : transparent}
+    50% {border-color: orange;}
+}

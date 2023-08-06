@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/styles/welcome.css">
+    <title>Login</title>
+
+</head>
+<body>
+
+        <div id="login">
+                {{if eq .Data "Incorrect ID or Password"}}
+                <h2 style="color: red;">*Incorrect ID or Password</h2>
+            {{end}}
+                <form action="/loginCheck" method="post">
+                    <label class="label" for="username">UserName : </label><br>
+                    <input type="text" class="inputField" id="usernamelgn" name="username" required autofocus><br><br>
+                    <label class="label" for="password">Password :</label><br>
+                    <input type="password" class="inputField" id="passwordlgn" name="password" required autofocus> 
+                    <input type="submit" value="Submit" id="submitlgn">
+                  </form>
+                </div>
+
+
+
+    </div>
+
+</body>
+</html>
