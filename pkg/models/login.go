@@ -20,6 +20,8 @@ type ViewData struct {
 }
 
 func LoginUser(res http.ResponseWriter, req *http.Request , userName , password string){
+
+	fmt.Println("test1", req);
 	
 	db, err := Connection()
 	var errMsg types.ErrMsg
@@ -89,7 +91,8 @@ func LoginUser(res http.ResponseWriter, req *http.Request , userName , password 
 					db.Exec("UPDATE cookie SET sessionId = ?, userId = ?", sessionID, userId)
 				}
 				if(user.Admin == 1){
-					fmt.Println("admin")
+					fmt.Println("admin123")
+					fmt.Println(req)
 					http.Redirect(res, req, "/admin", http.StatusSeeOther)
 
 				}else{
@@ -111,18 +114,6 @@ func LoginUser(res http.ResponseWriter, req *http.Request , userName , password 
 	}
 
 
-
-	// tmpl := template.Must(template.ParseFiles("views/welcome.html"))
-
-	// data := ViewData{
-	// 	Data: "Incorrect ID or Password",
-	// }
-
-	// err = tmpl.Execute(res, data)
-	// if err != nil {
-	// 	http.Error(res, "Internal Server Error", http.StatusInternalServerError)
-	// }
-
 }
 
 
@@ -130,13 +121,7 @@ func authenticate(res http.ResponseWriter, req *http.Request ,username string , 
 
 
 	fmt.Println("Inside authentication block")
-	// hash2, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-	
-	// fmt.Println(hash2)
-	// if err != nil {
-	// 	fmt.Println("some issue in hashing")
-    //     return("Some Issue in hashing")
-    // }
+
 	err := bcrypt.CompareHashAndPassword([]byte(user.Hash), []byte(password))
     
 	if(err == nil){
@@ -146,13 +131,13 @@ func authenticate(res http.ResponseWriter, req *http.Request ,username string , 
 	}else{
 		fmt.Println("Incorrect ID or Password")
 	}
-return "OK"
-// return "Incorrect ID or Password"
+	return "OK"
+
 }
 
 
 // Remove Session From Database and redirect to Login page
-func Logout(res http.ResponseWriter, req *http.Request){
+func Logout(res http.ResponseWriter, req *http.Request , userId int ){
 
 	db, err := Connection()
 	var errMsg types.ErrMsg
@@ -162,11 +147,7 @@ func Logout(res http.ResponseWriter, req *http.Request){
 	}
 	defer db.Close()
 
-	userId, ok := req.Context().Value(userID).(string)
-	if !ok {
-		http.Error(res, "Custom variable not found", http.StatusInternalServerError)
-		return
-	}
+
 
 	req.Header.Set("Cookie", "" )
 	fmt.Println( req.Header.Get("Cookie"))

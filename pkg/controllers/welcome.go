@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"lib-manager/pkg/models"
 	"net/http"
-	"context"
+	// "context"
 	"lib-manager/pkg/views"
 )
 
@@ -19,43 +19,16 @@ func Welcome(writer http.ResponseWriter, request *http.Request) {
 	
 	
 
-	status, userId , userName , admin := models.Middleware(writer,request)
+	status, _,_,admin:= models.Middleware(writer,request)
 
-	// Setting Values To Req Objects
-	if(admin == 1){
-		ctx := context.WithValue(request.Context(), admin, 1)
-		request = request.WithContext(ctx)
-		
-	}else{
-		ctx := context.WithValue(request.Context(), admin, 0)
-		request = request.WithContext(ctx)
-	}
-	ctx := context.WithValue(request.Context(), userID, userId)
-	request = request.WithContext(ctx)
-	ctx = context.WithValue(request.Context(), userName, userName)
-	request = request.WithContext(ctx)
-
-	UserId:= request.Context().Value(userID).(int)
-	UserName:= request.Context().Value(userName).(string)
-	Admin:= request.Context().Value(admin).(int)
-	fmt.Println("================================")
-	fmt.Println(UserId)
-	fmt.Println(Admin)
-	fmt.Println(UserName)
-	fmt.Println("================================")
-
-
+	
 		if(status == "OK"){
-		admin, ok := request.Context().Value(adminAuthKey).(int)
+		// admin, ok := request.Context().Value(adminAuthKey).(int)
 
 		fmt.Println("============================")
 		fmt.Println(admin)
 		fmt.Println("============================")
-		if !ok {
-			// Value not found or not of the expected type
-			http.Error(writer, "Unauthorized", http.StatusUnauthorized)
-			return
-		}
+		
 
 		if admin == 1 {
 			fmt.Fprintln(writer, "Admin Auth Granted")

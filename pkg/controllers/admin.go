@@ -2,7 +2,7 @@ package controllers
 
 import (
 	// "encoding/json"
-	"context"
+	// "context"
 	"fmt"
 	"net/http"
 	"lib-manager/pkg/views"
@@ -12,39 +12,19 @@ import (
 
 func GetAdmin(res http.ResponseWriter, req *http.Request) {
 
-	status, userId , userName , admin := models.Middleware(res,req)
+	status, _ , _ , admin := models.Middleware(res,req)
 
-	// Setting Values To Req Objects
-	if(admin == 1){
-		ctx := context.WithValue(req.Context(), admin, 1)
-		req = req.WithContext(ctx)
-		
-	}else{
-		ctx := context.WithValue(req.Context(), admin, 0)
-		req = req.WithContext(ctx)
-	}
-	ctx := context.WithValue(req.Context(), userID, userId)
-	req = req.WithContext(ctx)
-	ctx = context.WithValue(req.Context(), userName, userName)
-	req = req.WithContext(ctx)
 
-	UserId:= req.Context().Value(userID).(int)
-	UserName:= req.Context().Value(userName).(string)
-	Admin:= req.Context().Value(admin).(int)
-	fmt.Println("================================")
-	fmt.Println(UserId)
-	fmt.Println(Admin)
-	fmt.Println(UserName)
-	fmt.Println("================================")
-	
-
-	// var admin int
 	if(status == "OK"){
 		fmt.Println("Yes Status is OK ")
 		// Admin:= req.Context().Value(admin).(int)
 		// fmt.Println(Admin)
-		if(models.IsAdmin(res , req) ==1){	
-			fmt.Println("adminnnnnn")		
+		if(admin ==1){	
+			fmt.Println("adminnnnnn")
+
+			books := models.GetBooks()
+
+			
 			t := views.GetAdmin()
 			res.WriteHeader(http.StatusOK)
 			t.Execute(res, nil)
@@ -62,3 +42,32 @@ func AdminCheckin(res http.ResponseWriter, req *http.Request){
 	res.WriteHeader(http.StatusOK)
 	t.Execute(res, nil)
 }
+
+func AdminCheckinSubmit(res http.ResponseWriter, req *http.Request){
+	
+	
+
+	http.Redirect(res, req, "/login", http.StatusSeeOther)
+}
+
+func AdminAdd(res http.ResponseWriter, req *http.Request){
+	t := views.AdminAdd()
+	res.WriteHeader(http.StatusOK)
+	t.Execute(res, nil)
+}
+
+func AdminAddSubmit(res http.ResponseWriter, req *http.Request){
+
+}
+
+
+func AdminCheckout(res http.ResponseWriter, req *http.Request){
+	t := views.AdminCheckout()
+	res.WriteHeader(http.StatusOK)
+	t.Execute(res, nil)
+}
+
+func AdminCheckoutSubmit(res http.ResponseWriter, req *http.Request){
+
+}
+

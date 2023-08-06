@@ -6,7 +6,7 @@ import (
 	"lib-manager/pkg/views"
 	"fmt"
 	// "database/sql"
-	"context"
+	// "context"
 	"net/http"
 
 )
@@ -99,9 +99,9 @@ func Middleware(res http.ResponseWriter, req *http.Request ) (string,int , strin
 		res.WriteHeader(http.StatusOK)
 		t.Execute(res, nil)
 	}	
-	fmt.Println("sds1")
+	// fmt.Println("sds1")
 	for rows.Next() {
-		fmt.Println("sds2")
+		// fmt.Println("sds2")
 		// fmt.Println(rows)
 		rows.Scan( &admin , &userName)
 		// break
@@ -130,26 +130,26 @@ func Middleware(res http.ResponseWriter, req *http.Request ) (string,int , strin
 		
 	} else{
 		fmt.Println("Inside ")
-		if(admin == 1){
-			ctx := context.WithValue(req.Context(), admin, 1)
-			req = req.WithContext(ctx)
-			// req.Body.adminAuth = 1
-		}else{
-			ctx := context.WithValue(req.Context(), admin, 0)
-			req = req.WithContext(ctx)
-		}
-		ctx := context.WithValue(req.Context(), userID, userId)
-		req = req.WithContext(ctx)
-		ctx = context.WithValue(req.Context(), userName, userName)
-		req = req.WithContext(ctx)
+		// if(admin == 1){
+		// 	ctx := context.WithValue(req.Context(), admin, 1)
+		// 	req = req.WithContext(ctx)
+		// 	// req.Body.adminAuth = 1
+		// }else{
+		// 	ctx := context.WithValue(req.Context(), admin, 0)
+		// 	req = req.WithContext(ctx)
+		// }
+		// ctx := context.WithValue(req.Context(), userID, userId)
+		// req = req.WithContext(ctx)
+		// ctx = context.WithValue(req.Context(), userName, userName)
+		// req = req.WithContext(ctx)
 
-		UserId:= req.Context().Value(userID).(int)
-		UserName:= req.Context().Value(userName).(string)
-		Admin:= req.Context().Value(admin).(int)
+		// UserId:= req.Context().Value(userID).(int)
+		// UserName:= req.Context().Value(userName).(string)
+		// Admin:= req.Context().Value(admin).(int)
 		fmt.Println("================================")
-		fmt.Println(UserId)
-		fmt.Println(Admin)
-		fmt.Println(UserName)
+		fmt.Println(userId)
+		fmt.Println(admin)
+		fmt.Println(userName)
 		fmt.Println("================================")
 		
 
@@ -157,13 +157,13 @@ func Middleware(res http.ResponseWriter, req *http.Request ) (string,int , strin
 	return "OK", userId, userName , admin
 }
 
-// Check for authentication of admin
-func IsAdmin(res http.ResponseWriter, req *http.Request )int{
-	Admin:= req.Context().Value(admin).(int)
+// // Check for authentication of admin
+// func IsAdmin(res http.ResponseWriter, req *http.Request )int{
+// 	Admin:= req.Context().Value(admin).(int)
 
-	if(Admin ==1){
-		return 1
-	}else{
-	return 0
-}
-}
+// 	if(Admin ==1){
+// 		return 1
+// 	}else{
+// 	return 0
+// }
+// }

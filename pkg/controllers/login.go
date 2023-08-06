@@ -2,11 +2,12 @@ package controllers
 
 import (
 	// "encoding/json"
-	"fmt"
-	"context"
+	// "fmt"
+	// "context"
 	"net/http"
 	"lib-manager/pkg/models"
 	"lib-manager/pkg/views"
+	"fmt"
 )
 
 // To open login page
@@ -28,6 +29,7 @@ func LogInError(res http.ResponseWriter, req *http.Request , error string){
 func ChecklogIn(res http.ResponseWriter, req *http.Request) {
 	username := req.FormValue("username")
 	password := req.FormValue("password")
+	fmt.Println("testing", req)
 
 	// models.loginUser(res ,req, username , password)
 	models.LoginUser(res ,req, username , password)
@@ -35,34 +37,10 @@ func ChecklogIn(res http.ResponseWriter, req *http.Request) {
 
 // Logout And End Session
 func Logout(res http.ResponseWriter, req *http.Request){
-	status, userId , userName , admin := models.Middleware(res,req)
-
-	// Setting Values To Req Objects
-	if(admin == 1){
-		ctx := context.WithValue(req.Context(), admin, 1)
-		req = req.WithContext(ctx)
-		
-	}else{
-		ctx := context.WithValue(req.Context(), admin, 0)
-		req = req.WithContext(ctx)
-	}
-	ctx := context.WithValue(req.Context(), userID, userId)
-	req = req.WithContext(ctx)
-	ctx = context.WithValue(req.Context(), userName, userName)
-	req = req.WithContext(ctx)
-
-	UserId:= req.Context().Value(userID).(int)
-	UserName:= req.Context().Value(userName).(string)
-	Admin:= req.Context().Value(admin).(int)
-	fmt.Println("================================")
-	fmt.Println(UserId)
-	fmt.Println(Admin)
-	fmt.Println(UserName)
-	fmt.Println("================================")
-
+	status,userID,_,_ := models.Middleware(res,req)
 
 	if(status == "OK"){
-		models.Logout(res , req)	
+		models.Logout(res , req , userID)	
 	}else{
 		http.Redirect(res, req, "/login", http.StatusSeeOther)
 	}
