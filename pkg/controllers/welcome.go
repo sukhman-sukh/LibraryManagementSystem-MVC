@@ -31,13 +31,13 @@ func Welcome(writer http.ResponseWriter, request *http.Request) {
 		
 
 		if admin == 1 {
-			fmt.Fprintln(writer, "Admin Auth Granted")
+			fmt.Println(writer, "Admin Auth Granted")
 			t := views.GetAdmin()
 			writer.WriteHeader(http.StatusOK)
 			t.Execute(writer, nil)
 
 		} else {
-			fmt.Fprintln(writer, "Not an Admin")
+			fmt.Println(writer, "Not an Admin")
 			t := views.GetClient()
 			writer.WriteHeader(http.StatusOK)
 			t.Execute(writer, nil)

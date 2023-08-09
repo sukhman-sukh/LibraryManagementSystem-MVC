@@ -4,6 +4,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"golang.org/x/crypto/bcrypt"
 	"lib-manager/pkg/types"
+	// "lib-manager/pkg/controllers"
 	"fmt"
 	"net/http"
 	// "html/template"
@@ -21,7 +22,7 @@ type ViewData struct {
 
 func LoginUser(res http.ResponseWriter, req *http.Request , userName , password string){
 
-	fmt.Println("test1", req);
+	// fmt.Println("test1", req);
 	
 	db, err := Connection()
 	var errMsg types.ErrMsg
@@ -32,15 +33,17 @@ func LoginUser(res http.ResponseWriter, req *http.Request , userName , password 
 	defer db.Close()
 	// fmt.Println(userName)
 
-	rows, err := db.Query("select id ,userName , hash , admin from users where userName = ?", userName)
+	rows, err := db.Query("SELECT id ,userName , hash , admin FROM users WHERE userName = ?", userName)
 	if err != nil {
 		errMsg.Msg = "Username Does Not Exist"
+
 		// return "","",errMsg
 	}
 	defer rows.Close()
 
-	fmt.Println(rows)
+	// fmt.Println(rows)
 	var user types.UserDetail
+
 	for rows.Next() {
 		fmt.Println("INside rows")
 		err := rows.Scan(&user.Id ,&user.UserName , &user.Hash , &user.Admin )
@@ -80,19 +83,20 @@ func LoginUser(res http.ResponseWriter, req *http.Request , userName , password 
 				fmt.Println("Cookie has been set")
 
 				var userId int
-				err = db.QueryRow("SELECT id FROM users WHERE userName = ?", userName).Scan(&userId)
+				err = db.QueryRow("SELECT userId FROM cookie" ).Scan(&userId)
+				fmt.Println("====================================================================",user.Id)
 				if err != nil {}
-					if(IsDbEmpty("cookie" , db) == true ){
+				if(userId == 0){
 					fmt.Println("Empty table of cookie")	
 						// No record found, insert a new row
-					db.Exec("INSERT INTO cookie (sessionId, userId) VALUES (?, ?)", sessionID, userId)
+					db.Exec("INSERT INTO cookie (sessionId, userId) VALUES (?, ?)", sessionID, user.Id)
 				}else{
 					fmt.Println("Table has some values")	
-					db.Exec("UPDATE cookie SET sessionId = ?, userId = ?", sessionID, userId)
+					db.Exec("UPDATE cookie SET sessionId = ?, userId = ?", sessionID, user.Id)
 				}
 				if(user.Admin == 1){
 					fmt.Println("admin123")
-					fmt.Println(req)
+					// fmt.Println(req)
 					http.Redirect(res, req, "/admin", http.StatusSeeOther)
 
 				}else{
@@ -104,11 +108,10 @@ func LoginUser(res http.ResponseWriter, req *http.Request , userName , password 
 			}else{
 				errMsg.Msg = "Incorrect ID or Password"
 				// fmt.Fprintln(errMsg.Msg)
-				t := views.StartPage()
+				t := views.LogIn()
 				res.WriteHeader(http.StatusOK)
-				t.Execute(res,errMsg.Msg )
+				t.Execute(res,errMsg )
 			
-				// return "","",errMsg
 			}
 		}
 	}
@@ -118,7 +121,6 @@ func LoginUser(res http.ResponseWriter, req *http.Request , userName , password 
 
 
 func authenticate(res http.ResponseWriter, req *http.Request ,username string , password string , user types.UserDetail) (string){
-
 
 	fmt.Println("Inside authentication block")
 
@@ -130,9 +132,8 @@ func authenticate(res http.ResponseWriter, req *http.Request ,username string , 
 	
 	}else{
 		fmt.Println("Incorrect ID or Password")
+		return "Incorrect ID or Password"
 	}
-	return "OK"
-
 }
 
 
@@ -147,8 +148,7 @@ func Logout(res http.ResponseWriter, req *http.Request , userId int ){
 	}
 	defer db.Close()
 
-
-
+// Empty cookie and kill the session
 	req.Header.Set("Cookie", "" )
 	fmt.Println( req.Header.Get("Cookie"))
 	db.Exec("DELETE FROM cookie WHERE userId = ?",userId )

@@ -27,7 +27,29 @@ type ValidateCookie struct {
 
 type Data struct {
 	UserName string
-	Books []map[string]interface{}
-	ReqBook []map[string]interface{}
-	AdminReq []map[string]interface{}		
+	Books  []Books
+	ReqBook []ReqBooks
+	AdminReq []AdminReq	
+}
+
+type Books struct {
+	BookId string
+	BookName string
+	Author string
+	Copies int
+}
+
+type ReqBooks struct {
+	ReqId string
+	Date string
+	BookId string
+	UserId string
+	Status string
+}
+
+
+type AdminReq struct {
+	ReqId string
+	UserId string
+	Status string
 }

@@ -109,7 +109,7 @@ func AdminAddSubmit(res http.ResponseWriter, req *http.Request){
 
 	if(status == "OK"){
 		if(admin ==1){	
-			fmt.Println("adminnnnnn")
+			fmt.Println("adminn Addd")
 			// username := req.FormValue("username")
 
 			bookname := req.FormValue("bookname");

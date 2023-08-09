@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../styles/welcome.css">
+    <link rel="stylesheet" href="/templates/styles/welcome.css">
     <title>Login</title>
 
 </head>
 <body>
 
         <div id="login">
-                {{if eq .Data "Incorrect ID or Password"}}
+                {{if eq .Msg "Incorrect ID or Password"}}
                 <h2 style="color: red;">*Incorrect ID or Password</h2>
             {{end}}
                 <form action="/loginCheck" method="post">

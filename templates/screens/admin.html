@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../styles/admin.css" type="text/css">
+    <link rel="stylesheet" href="/templates/styles/admin.css" type="text/css">
     <title>Admin</title>
 </head>
 <body>
-    <h1>Hello ! {{.Username}}</h1>
+    <h1>Hello ! {{.UserName}}</h1>
     <h2>List of books</h2>
     <button id = "add" style="background-color: limegreen; " onclick="window.location.href = '/admin/add';">Add +</button>
     <button class="statusbtn" id="reqcheckout" onclick="window.location.href = `/checkout`;" style="background-color: limegreen;"  > Check-Out </button>
@@ -31,48 +31,24 @@
             </thead>
 
             <tbody >
-                <!-- <% let i=0; data.forEach(function(entry) { %>
-                    <% if(entry.copies != 0) { %>
-                  <tr>
-                    <td>  <%= entry.bookId %></td>
-                    <td></td>
-                    <td>||</td>
-                    <td><%= entry.bookName %></td>
-                    <td></td>
-                    <td>||</td>
-                    <td><%= entry.author %></td>
-                    <td></td>
-                    <td>||</td>
-                    <td><%= entry.copies %></td>
-                    <td><form id="bookIdForm" style="display: none;">
-                        <input type="text" class="inputField" style="display: none;" id="bookId" name="bookId" value= <%= entry.bookId %> required autofocus><br><br>
-                        <input type="text" class="inputField" id="copies" name="copies"style="display: none;" value= <%= entry.copies %> required autofocus><br><br>
-                            
-                    </form></td>
-                    <td></td>
-
-                    <td></td>
-                    <% } %>
-                </tr>
-                
-                <% }); %> -->
-                {{range $i, $entry := .Data}}
-                    {{if ne $entry.Copies 0}}
+           
+                {{range .Books}}
+                    {{if ne .Copies 0}}
                         <tr>
-                            <td>{{$entry.BookID}}</td>
+                            <td>{{.BookId}}</td>
                             <td></td>
                             <td>||</td>
-                            <td>{{$entry.BookName}}</td>
+                            <td>{{.BookName}}</td>
                             <td></td>
                             <td>||</td>
-                            <td>{{$entry.Author}}</td>
+                            <td>{{.Author}}</td>
                             <td></td>
                             <td>||</td>
-                            <td>{{$entry.Copies}}</td>
+                            <td>{{.Copies}}</td>
                             <td>
                                 <form id="bookIdForm" style="display: none;">
-                                    <input type="text" class="inputField" style="display: none;" id="bookId" name="bookId" value="{{$entry.BookID}}" required autofocus><br><br>
-                                    <input type="text" class="inputField" id="copies" name="copies" style="display: none;" value="{{$entry.Copies}}" required autofocus><br><br>
+                                    <input type="text" class="inputField" style="display: none;" id="bookId" name="bookId" value="{{.BookID}}" required autofocus><br><br>
+                                    <input type="text" class="inputField" id="copies" name="copies" style="display: none;" value="{{.Copies}}" required autofocus><br><br>
                                 </form>
                             </td>
                             <td></td>
@@ -103,15 +79,15 @@
             </thead>
 
             <tbody >
-                {{range $i, $reqEntry := .ReqData}}
+                {{range $i, $reqEntry := .ReqBook}}
                 <tr>
-                    <td>{{$reqEntry.ReqID}}</td>
+                    <td>{{$reqEntry.ReqId}}</td>
                     <td></td>
                     <td>||</td>
-                    <td>{{$reqEntry.BookID}}</td>
+                    <td>{{$reqEntry.BookId}}</td>
                     <td></td>
                     <td>||</td>
-                    <td>{{$reqEntry.UserID}}</td>
+                    <td>{{$reqEntry.UserId}}</td>
                     <td></td>
                     <td>
                         <button class="statusbtn" id="reqbtn"
@@ -129,8 +105,9 @@
                             {{else if eq $reqEntry.Status -1}}
                                 Requested Check-Out
                             {{else}}
-                                {{with $reqEntry}}
-                                    {{.Status}}
+                                Request Checkin
+                                <!-- {{with $reqEntry}}
+                                    {{.Status}} -->
                                 {{end}}
                             {{end}}
                         </button>
@@ -160,10 +137,10 @@
             <tbody >
                 {{range $i, $reqst := .AdminReq}}
                 <tr>
-                    <td>{{$reqst.ReqID}}</td>
+                    <td>{{$reqst.ReqId}}</td>
                     <td></td>
                     <td>||</td>
-                    <td>{{$reqst.UserID}}</td>
+                    <td>{{$reqst.UserId}}</td>
                     <td></td>
                     <td>
                         <button class="statusbtn" id="choose" style="background-color: rgb(252, 133, 133);" onclick="window.location.href = '/admin/choose';">

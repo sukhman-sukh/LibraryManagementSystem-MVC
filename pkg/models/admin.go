@@ -6,9 +6,9 @@ import (
 	"lib-manager/pkg/types"
 	"fmt"
 	"net/http"
-	// "strconv"
+	"strconv"
 	// "html/template"
-	// "lib-manager/pkg/views"
+	// "lib-manager/pkg/types"
 	// "time"
 	// "database/sql"
 	// "crypto/rand"
@@ -20,28 +20,38 @@ import (
 func AdminAdd( res http.ResponseWriter, req *http.Request , bookname string, Author string, Copies string) string {
 	// AdminAddSubmit(res, req , bookname, Author, Copies)
 	// admin := false
-	
+
+    var book types.Books
 	db, err := Connection()
 	var errMsg types.ErrMsg
 	if err != nil {
 		errMsg.Msg = "Error in connecting to database"
+        fmt.Println(errMsg.Msg)
 		return errMsg.Msg
 	}
 	defer db.Close()
 
+    fmt.Println("add Books..")
+
 	rows, err := db.Query("select * from books_record where bookName = ?", bookname)
-	if(IsDbEmpty("cookie" , db)){
+    
+	if(!(rows.Next())){
 		fmt.Println("1st entry of the book")
 		db.Exec("INSERT INTO books_record (bookName, author, copies) VALUES (?, ? ,?)", bookname, Author , Copies)
 		return "OK"
-	}	
-	fmt.Println("sds1")
-	for rows.Next() {
-		fmt.Println("Updating existting book")
-		db.Exec("UPDATE books_record SET copies = ? where bookName = ?", Copies, bookname)
-		
 	}
-
+    
+    if err := rows.Scan(&book.BookId, &book.BookName, &book.Author, &book.Copies); err != nil {
+        panic(err)
+    }
+    
+    // fmt.Println("sds1")
+    
+    Copy, _ := strconv.Atoi(Copies)
+    Copy = book.Copies+Copy
+    fmt.Println("Updating existting book  " , Copy)
+    db.Exec("UPDATE books_record SET copies = ? where bookName = ?", Copy , bookname)	
+    
 	return "OK"
 }
 
@@ -62,7 +72,7 @@ func AdminRemove( res http.ResponseWriter, req *http.Request , bookId string,Cop
 	return "OK"
 }
 
-func GetBooks(res http.ResponseWriter, req *http.Request) (string , []map[string]interface{}) {
+func GetBooks(res http.ResponseWriter, req *http.Request) (string , []types.Books) {
 	db, err := Connection()
 	var errMsg types.ErrMsg
 	if err != nil {
@@ -78,31 +88,31 @@ func GetBooks(res http.ResponseWriter, req *http.Request) (string , []map[string
     defer rows.Close()
 
 
-	var books []map[string]interface{}
+	// var books []map[string]interface{}
+    var books []types.Books
+    var book types.Books
 
     for rows.Next() {
-        var bookID, bookName, author string
+        var bookID , bookName, author string
         var copies int
         if err := rows.Scan(&bookID, &bookName, &author, &copies); err != nil {
             panic(err)
         }
-        books = append(books, map[string]interface{}{
-            "bookId":   bookID,
-            "bookName": bookName,
-            "author":   author,
-            "copies":   copies,
-        })
+        book.BookId = bookID
+        book.BookName = bookName
+        book.Author = author
+        book.Copies = copies
+        books = append(books , book)
     }
 
     if len(books) == 0 {
-        books = append(books, map[string]interface{}{
-            "bookId":   "empty",
-            "bookName": "empty",
-            "author":   "empty",
-            "copies":   "empty",
-        })
+        book.BookId = "empty"
+        book.BookName = "empty"
+        book.Author = "empty"
+        book.Copies = 0
+    
     }
-
+    books = append(books , book)
     fmt.Println(books)
 
 	return "OK" , books
@@ -110,7 +120,7 @@ func GetBooks(res http.ResponseWriter, req *http.Request) (string , []map[string
 }
 
 
-func GetReqBooks(res http.ResponseWriter, req *http.Request) (string , []map[string]interface{}) {
+func GetReqBooks(res http.ResponseWriter, req *http.Request) (string , []types.ReqBooks) {
 	db, err := Connection()
     var errMsg types.ErrMsg
     if err!= nil {
@@ -125,41 +135,40 @@ func GetReqBooks(res http.ResponseWriter, req *http.Request) (string , []map[str
     }
     defer rows.Close()
 
-	var reqBook []map[string]interface{}
+    var reqBooks []types.ReqBooks
+    var reqBook types.ReqBooks
 
     for rows.Next() {
         var reqID, date, bookId , userId , status string
-        // var copies int
+
         if err := rows.Scan(&reqID, &date, &bookId , &userId , &status); err != nil {
             panic(err)
         }
-        reqBook = append(reqBook, map[string]interface{}{
+        reqBook.ReqId = reqID
+        reqBook.Date = date
+        reqBook.BookId = bookId
+        reqBook.UserId = userId
+        reqBook.Status = status
 
-			"reqID": reqID,
-			"date": date, 
-			"bookId" : bookId, 
-			"userId":userId , 
-			"status" :status,
-		})
+        reqBooks = append(reqBooks , reqBook)    
     }
-
-    if len(reqBook) == 0 {
-        reqBook = append(reqBook, map[string]interface{}{
-			"reqID": "empty",
-			"date": "empty", 
-			"bookId" :"empty", 
-			"userId":"empty", 
-			"status" :"empty",
-        })
+    
+    if len(reqBooks) == 0 {
+        reqBook.ReqId = "empty"
+        reqBook.Date = "empty"
+        reqBook.BookId = "empty"
+        reqBook.UserId = "empty"
+        reqBook.Status = "empty"
+        reqBooks = append(reqBooks , reqBook)
     }
+    fmt.Println(reqBooks)
 
-    fmt.Println(reqBook)
+	return "OK" , reqBooks
 
-	return "OK" , reqBook
 }
 
 
-func GetAdminReq(res http.ResponseWriter, req *http.Request) (string , []map[string]interface{}) {
+func GetAdminReq(res http.ResponseWriter, req *http.Request) (string , []types.AdminReq) {
 	db, err := Connection()
     var errMsg types.ErrMsg
     if err!= nil {
@@ -174,7 +183,8 @@ func GetAdminReq(res http.ResponseWriter, req *http.Request) (string , []map[str
     }
     defer rows.Close()
 
-	var adminReq []map[string]interface{}
+    var adminReqs []types.AdminReq
+    var adminReq types.AdminReq
 
     for rows.Next() {
         var reqID, userId , status string
@@ -182,25 +192,24 @@ func GetAdminReq(res http.ResponseWriter, req *http.Request) (string , []map[str
         if err := rows.Scan(&reqID, &userId , &status); err != nil {
             panic(err)
         }
-        adminReq = append(adminReq, map[string]interface{}{
+        adminReq.ReqId = reqID
+        adminReq.UserId = userId
+        adminReq.Status = status
 
-			"reqID": reqID,
-			"userId":userId , 
-			"status" :status,
-		})
+        adminReqs = append(adminReqs , adminReq)    
     }
+    
+    if len(adminReqs) == 0 {
 
-    if len(adminReq) == 0 {
-        adminReq = append(adminReq, map[string]interface{}{
-			"reqID": "empty", 
-			"userId":"empty", 
-			"status" :"empty",
-        })
+        adminReq.ReqId = "empty"
+        adminReq.UserId = "empty"
+        adminReq.Status = "empty"
+
+        adminReqs = append(adminReqs , adminReq)    
     }
+    fmt.Println(adminReqs)
 
-    fmt.Println(adminReq)
-
-	return "OK" , adminReq
+	return "OK" , adminReqs
 }
 
 

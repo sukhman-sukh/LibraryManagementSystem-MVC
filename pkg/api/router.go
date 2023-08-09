@@ -4,11 +4,11 @@ import (
 	"lib-manager/pkg/controllers"
 	"net/http"
 	"github.com/gorilla/mux"
-	
+	"fmt"
 )
 
 func Start() {
-	
+	fmt.Println("Starting")
 	r := mux.NewRouter()
 	// fs := r.FileServer(http.Dir("/templates/"))
 

@@ -26,15 +26,14 @@ func RegisterUser( username , password , reEnterPass , reqAccess string) string{
 		errMsg.Msg = "Error in connecting to database"
 		return errMsg.Msg
 	}
-	defer db.Close()
+		defer db.Close()
 
-	rows, err := db.Query("select * from users where userName = ?", username)
-	if err != nil {
-		if err == sql.ErrNoRows {
+		rows, err := db.Query("select * from users where userName = ?", username)
+		if err != nil {}
+		if ((rows.Next())) {
 		errMsg.Msg = "Username is not unique"
 		fmt.Println("Username is not unique")
 		return errMsg.Msg
-	}
 	}
 	defer rows.Close()
 

@@ -3,7 +3,7 @@ package models
 import (
 	_ "github.com/go-sql-driver/mysql"
 	// "golang.org/x/crypto/bcrypt"
-	// "lib-manager/pkg/views"
+	"lib-manager/pkg/types"
 	"fmt"
 	// "database/sql"
 	// "context"
@@ -27,13 +27,9 @@ const (
 
 func Middleware(res http.ResponseWriter, req *http.Request ) (string,int , string ,int){
 	
-	// var sessionId , userName string
-	// var userId , admin int
-	var sessionID string
-	var userId int
-	var admin int
-	var userName string
 
+	var sessionInfo types.ValidateCookie
+	
 	// Connect To Database
 	db, err := Connection()
 	if err != nil {
@@ -70,50 +66,54 @@ func Middleware(res http.ResponseWriter, req *http.Request ) (string,int , strin
 		fmt.Println("Error querying the database:")
 	}
 	defer rows.Close()
-	if(IsDbEmpty("cookie" , db)){
-		fmt.Println("NOthing in sessionID")
-		// t := views.LogIn()
-		// res.WriteHeader(http.StatusOK)
-		// t.Execute(res, nil)
-		return "NOthing in sessionID",0,"",0
+
+	rowCheck := rows
+	if(rowCheck.Next()){
+		fmt.Println("sfsdfdsfsdfsdfsd")
+		// return "Nothing in sessionID",0,"",0
 	}	
 	fmt.Println("sds1")
 	for rows.Next() {
 
 		fmt.Println("sds2")
 		fmt.Println(rows)
-		rows.Scan(&sessionID , &userId )
-		// break
-		// if err != nil {
-		// 	// log.Fatal("Error scanning rows:", err)
-		// }
+		rows.Scan(&sessionInfo.SessionID , &sessionInfo.UserId )
+	
 
 	}
-	rows, err = db.Query("SELECT  admin, userName FROM users WHERE  users.id = ?",userId)
+
+	rows, err = db.Query("SELECT  admin, userName FROM users WHERE  users.id = ?",sessionInfo.UserId)
 	if err != nil {
 		fmt.Println("Error querying the database:")
 	}
 	defer rows.Close()
-	if(IsDbEmpty("cookie" , db)){
-		fmt.Println("NOthing in sessionID")
-		return "NOthing in sessionID",0,"",0
-	}	
+	// if(!(rows.Next())){
+	// 	fmt.Println("NOthing in sessionID")
+	// 	return "NOthing in sessionID",0,"",0
+	// }	
 	// fmt.Println("sds1")
 	for rows.Next() {
 		// fmt.Println("sds2")
 		// fmt.Println(rows)
-		rows.Scan( &admin , &userName)
+		rows.Scan( &sessionInfo.Admin , &sessionInfo.Username)
 		// break
 		// if err != nil {
 		// 	// log.Fatal("Error scanning rows:", err)
 		// }
 
 	}	
-
+	if(sessionInfo.SessionID == "" || sessionInfo.Username=="" || sessionInfo.Admin==0 || sessionInfo.UserId == 0){
+		fmt.Println("Nothing in sessionID")
+		fmt.Println(sessionInfo.SessionID)
+		fmt.Println(sessionInfo.Username)
+		fmt.Println(sessionInfo.Admin)
+		fmt.Println(sessionInfo.UserId)
+		return "Nothing in sessionID",0,"",0
+	}
 	// if err := rows.Err(); err != nil {
 	// 	// log.Fatal(err)
 	// }
-	fmt.Println(sessionID , userId , userName , admin)
+	fmt.Println(sessionInfo.SessionID , sessionInfo.UserId , sessionInfo.Username , sessionInfo.Admin)
 
 	if err != nil {
 		fmt.Println("Internal Server Error")
@@ -121,8 +121,8 @@ func Middleware(res http.ResponseWriter, req *http.Request ) (string,int , strin
 		return "Cookie Not Set",0,"",0
 	}
 
-	fmt.Println("================"+sessionID)
-	if cookieId != sessionID {
+	fmt.Println("================"+sessionInfo.SessionID)
+	if cookieId != sessionInfo.SessionID {
 		fmt.Println("Cookie Was Altered On User Side")
 		// http.Redirect(res, req , "/", http.StatusSeeOther)
 		return "Cookie Was Altered On User Side",0,"",0
@@ -146,23 +146,13 @@ func Middleware(res http.ResponseWriter, req *http.Request ) (string,int , strin
 		// UserName:= req.Context().Value(userName).(string)
 		// Admin:= req.Context().Value(admin).(int)
 		fmt.Println("================================")
-		fmt.Println(userId)
-		fmt.Println(admin)
-		fmt.Println(userName)
+		fmt.Println(sessionInfo.UserId)
+		fmt.Println(sessionInfo.Admin)
+		fmt.Println(sessionInfo.Username)
 		fmt.Println("================================")
 		
 
 	}
-	return "OK", userId, userName , admin
+	return "OK", sessionInfo.UserId, sessionInfo.Username , sessionInfo.Admin
 }
 
-// // Check for authentication of admin
-// func IsAdmin(res http.ResponseWriter, req *http.Request )int{
-// 	Admin:= req.Context().Value(admin).(int)
-
-// 	if(Admin ==1){
-// 		return 1
-// 	}else{
-// 	return 0
-// }
-// }

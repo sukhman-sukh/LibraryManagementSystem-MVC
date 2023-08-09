@@ -28,8 +28,8 @@ section{
 }
 .wlcm{  
   background-image: url("../assets/lib_background.jpg");
-  background-size: contain;
-  background-repeat: none;
+  /* background-size: contain; */
+  /* background-repeat: none; */
 } 
 
 #txt1{

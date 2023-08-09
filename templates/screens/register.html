@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/styles/welcome.css">
+    <link rel="stylesheet" href="/templates/styles/welcome.css">
     <title>register</title>
 
 </head>
@@ -11,11 +11,7 @@
 
         <div id="register">
             <div>
-                <!-- <% if(data == "Username is not unique") {%>
-                    <h2 style="color: red;" >*Username is not unique </h2>
-                    <%}%> -->
-
-                {{ if  eq .Data "Username is not unique"}}
+                {{ if  eq .Msg "Username is not unique"}}
                     <h2 style="color: red;" >*Username is not unique </h2>
                 {{end}}                                                                                 
                 <form  id="registerForm">
@@ -39,8 +35,6 @@
         
                     <h2 id ="invalid"> *Not Upto Criteria</h2>
                     <h2 id="mismatch" > *Password Not Matching</h2>
-        
-                    <!-- <input type="submit" value="Submit" id ="btnsubmit" onmouseover="check()" > -->
                 </form>
                 <button  id ="btnsubmit" onmouseover="check()" >Submit</button>
         

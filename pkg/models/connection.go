@@ -77,19 +77,19 @@ func Connection() (*sql.DB, error) {
 // Check If DB is empty 
 //  Return True for empty DB
 
-func IsDbEmpty(tableName string , db *sql.DB) bool{
+// func IsDbEmpty(tableName string , db *sql.DB , condition string) bool{
 
-	query := fmt.Sprintf("SELECT COUNT(*) FROM %s", tableName)
+// 	query := fmt.Sprintf("SELECT COUNT(*) FROM %s WHERE "+condition, tableName)
 
-	var rowCount int
-	err := db.QueryRow(query).Scan(&rowCount)
-	if err != nil {
-		log.Fatal("Error querying the database:", err)
-	}
+// 	var rowCount int
+// 	err := db.QueryRow(query).Scan(&rowCount)
+// 	if err != nil {
+// 		log.Fatal("Error querying the database:", err)
+// 	}
 
-	if rowCount == 0 {
-		fmt.Println("Database is empty")
-		return true 
-	}
-	return false
-}
+// 	if rowCount == 0 {
+// 		fmt.Println("Database is empty")
+// 		return true 
+// 	}
+// 	return false
+// }
