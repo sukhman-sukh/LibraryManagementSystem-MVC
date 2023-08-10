@@ -1,7 +1,0 @@
-#data.yaml
-
-DB_USERNAME: root
-DB_PASSWORD: Sardarji
-DB_HOST: localhost
-DB_NAME: LMS
-# hostname : "lib-manager"

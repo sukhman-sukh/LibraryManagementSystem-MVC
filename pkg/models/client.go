@@ -2,21 +2,21 @@ package models
 
 import (
 	"net/http"
-	"lib-manager/pkg/types"
+    "database/sql"
   _ "github.com/go-sql-driver/mysql"
 	
 )
 
 
 
-func Checkout( res http.ResponseWriter, req *http.Request , bookId string , userID int) string {
+func Checkout( res http.ResponseWriter, req *http.Request , db *sql.DB, bookId string , userID int) string {
 
-	db, err := Connection()
-    var errMsg types.ErrMsg
-    if err!= nil {
-        errMsg.Msg = "Error in connecting to database"
-    }
-    defer db.Close()
+	// db, err := Connection()
+    // var errMsg types.ErrMsg
+    // if err!= nil {
+    //     errMsg.Msg = "Error in connecting to database"
+    // }
+    // defer db.Close()
 
 	rows, _ := db.Query("SELECT copies FROM books_record WHERE bookId = ?", bookId)
     defer rows.Close()
@@ -33,13 +33,13 @@ func Checkout( res http.ResponseWriter, req *http.Request , bookId string , user
 }
 
 
-func Checkin(res http.ResponseWriter, req *http.Request , reqId string) (string ) {
-	db, err := Connection()
-    var errMsg types.ErrMsg
-    if err!= nil {
-        errMsg.Msg = "Error in connecting to database"
-    }
-    defer db.Close()
+func Checkin(res http.ResponseWriter, req *http.Request , db *sql.DB, reqId string) (string ) {
+	// db, err := Connection()
+    // var errMsg types.ErrMsg
+    // if err!= nil {
+    //     errMsg.Msg = "Error in connecting to database"
+    // }
+    // defer db.Close()
 
     rows, _ := db.Query("SELECT bookId FROM requests WHERE reqId = ?", reqId)
     defer rows.Close()

@@ -4,6 +4,7 @@ import (
 	"lib-manager/pkg/models"
 	"net/http"
 	"lib-manager/pkg/views"
+	"lib-manager/pkg/types"
 )
 
 type key int 
@@ -15,9 +16,14 @@ const (
 
 func Welcome(writer http.ResponseWriter, request *http.Request) {
 	
-	
+	db, err := models.Connection()
+    var errMsg types.ErrMsg
+    if err!= nil {
+        errMsg.Msg = "Error in connecting to database"
+    }
+    defer db.Close()
 
-	status, _,_,admin:= models.Middleware(writer,request)
+	status, _,_,admin:= models.Middleware(writer,request,db)
 
 	
 		if(status == "OK"){

@@ -18,15 +18,22 @@ import (
 
 func GetAdmin(res http.ResponseWriter, req *http.Request) {
 
-	status, userId , userName , admin := models.Middleware(res,req)
+	db, err := models.Connection()
+    var errMsg types.ErrMsg
+    if err!= nil {
+        errMsg.Msg = "Error in connecting to database"
+    }
+    defer db.Close()
+
+	status, userId , userName , admin := models.Middleware(res,req , db)
 
 	if(status == "OK"){
 		fmt.Println("Yes Status is OK ")
 		if(admin ==1){	
 
-			_ ,books := models.GetBooks(res ,req)
-			_, reqBook := models.GetReqBooks(res ,req ,userId,admin)
-			_ , adminReq := models.GetAdminReq(res ,req)
+			_ ,books := models.GetBooks(db)
+			_, reqBook := models.GetReqBooks(db, userId,admin)
+			_ , adminReq := models.GetAdminReq(db)
 			data := types.Data{
 				UserName: userName,
 				Books:     books,
@@ -55,15 +62,22 @@ func AdminCheckin(res http.ResponseWriter, req *http.Request){
 }
 
 func AdminCheckinSubmit(res http.ResponseWriter, req *http.Request){
-	
-	status, _ , _ , admin := models.Middleware(res,req)
+
+	db, err := models.Connection()
+    var errMsg types.ErrMsg
+    if err!= nil {
+        errMsg.Msg = "Error in connecting to database"
+    }
+    defer db.Close()
+
+	status, _ , _ , admin := models.Middleware(res,req , db)
 
 
 	if(status == "OK"){
 		if(admin ==1){	
 
 			reqId := req.FormValue("reqId");
-			_ = models.AdminCheckin(res, req , reqId)
+			_ = models.AdminCheckin(res, req ,db , reqId)
 
 			if(status == "OK"){
 				http.Redirect(res, req, "/admin", http.StatusSeeOther)
@@ -83,7 +97,14 @@ func AdminAdd(res http.ResponseWriter, req *http.Request){
 }
 
 func AdminAddSubmit(res http.ResponseWriter, req *http.Request){
-	status, _ , _ , admin := models.Middleware(res,req)
+
+	db, err := models.Connection()
+    var errMsg types.ErrMsg
+    if err!= nil {
+        errMsg.Msg = "Error in connecting to database"
+    }
+    defer db.Close()
+	status, _ , _ , admin := models.Middleware(res,req, db)
 
 
 	if(status == "OK"){
@@ -93,7 +114,7 @@ func AdminAddSubmit(res http.ResponseWriter, req *http.Request){
 			Author := req.FormValue("Author")
 			Copies := req.FormValue("Copies");
 
-			status := models.AdminAdd(res, req , bookname, Author, Copies)
+			status := models.AdminAdd(res, req ,db , bookname, Author, Copies)
 			if(status == "OK"){
 				http.Redirect(res, req, "/admin", http.StatusSeeOther)
 			}
@@ -113,13 +134,20 @@ func AdminCheckout(res http.ResponseWriter, req *http.Request){
 }
 
 func AdminCheckoutSubmit(res http.ResponseWriter, req *http.Request){
-	status, _ , _ , admin := models.Middleware(res,req)
+	db, err := models.Connection()
+    var errMsg types.ErrMsg
+    if err!= nil {
+        errMsg.Msg = "Error in connecting to database"
+    }
+    defer db.Close()
+
+	status, _ , _ , admin := models.Middleware(res,req,db)
 
 	if(status == "OK"){
 		if(admin ==1){	
 
 			reqId := req.FormValue("reqId");
-			status := models.AdminCheckout(res, req , reqId)
+			status := models.AdminCheckout(res, req ,db, reqId)
 
 			if(status == "OK"){
 				http.Redirect(res, req, "/admin", http.StatusSeeOther)
@@ -141,7 +169,13 @@ func AdminRemove(res http.ResponseWriter, req *http.Request){
 
 func AdminRemoveSubmit(res http.ResponseWriter, req *http.Request){
 
-	status, _ , _ , admin := models.Middleware(res,req)
+	db, err := models.Connection()
+    var errMsg types.ErrMsg
+    if err!= nil {
+        errMsg.Msg = "Error in connecting to database"
+    }
+    defer db.Close()
+	status, _ , _ , admin := models.Middleware(res,req,db)
 
 
 	if(status == "OK"){
@@ -150,7 +184,7 @@ func AdminRemoveSubmit(res http.ResponseWriter, req *http.Request){
 			bookId := req.FormValue("bookId");
 			copies := req.FormValue("Copies");
 
-			status := models.AdminRemove(res, req , bookId, copies)
+			status := models.AdminRemove(res, req ,db, bookId, copies)
 
 			if(status == "OK"){
 				http.Redirect(res, req, "/admin", http.StatusSeeOther)
@@ -171,13 +205,20 @@ func AdminChoose(res http.ResponseWriter, req *http.Request){
 
 func AdminAccept(res http.ResponseWriter, req *http.Request){
 
-	status, _ , _ , admin := models.Middleware(res,req)
+	db, err := models.Connection()
+    var errMsg types.ErrMsg
+    if err!= nil {
+        errMsg.Msg = "Error in connecting to database"
+    }
+    defer db.Close()
+
+	status, _ , _ , admin := models.Middleware(res,req,db)
 
 	if(status == "OK"){
 		if(admin ==1){	
 
 			reqId := req.FormValue("reqId");
-			status := models.AdminAccept(res, req , reqId)
+			status := models.AdminAccept(res, req ,db , reqId)
 
 			if(status == "OK"){
 				http.Redirect(res, req, "/admin", http.StatusSeeOther)
@@ -191,7 +232,14 @@ func AdminAccept(res http.ResponseWriter, req *http.Request){
 }
 
 func AdminDeny(res http.ResponseWriter, req *http.Request){
-	status, _ , _ , admin := models.Middleware(res,req)
+	db, err := models.Connection()
+    var errMsg types.ErrMsg
+    if err!= nil {
+        errMsg.Msg = "Error in connecting to database"
+    }
+    defer db.Close()
+
+	status, _ , _ , admin := models.Middleware(res,req,db)
 
 
 	if(status == "OK"){
@@ -199,7 +247,7 @@ func AdminDeny(res http.ResponseWriter, req *http.Request){
 
 			reqId := req.FormValue("reqId");
 
-			status := models.AdminAccept(res, req , reqId)
+			status := models.AdminAccept(res, req ,db , reqId)
 
 			if(status == "OK"){
 				http.Redirect(res, req, "/admin", http.StatusSeeOther)

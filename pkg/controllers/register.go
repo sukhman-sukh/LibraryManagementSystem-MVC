@@ -15,7 +15,14 @@ func Register(res http.ResponseWriter, req *http.Request) {
 	reEnterPass := req.FormValue("reEnterPass") 
 	adminAccess := req.FormValue("adminAccess")
 
-	status := models.RegisterUser(username , password , reEnterPass , adminAccess)
+
+	db, err := models.Connection()
+    if err!= nil {
+        errMsg.Msg = "Error in connecting to database"
+    }
+    defer db.Close()
+
+	status := models.RegisterUser(db ,username , password , reEnterPass , adminAccess)
 	errMsg.Msg = status
 	if(status == "OK"){
 		t := views.StartPage()

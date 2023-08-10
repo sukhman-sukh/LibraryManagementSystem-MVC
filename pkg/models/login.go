@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"crypto/rand"
 	"encoding/hex"
+	"database/sql"
 	"lib-manager/pkg/views"
 	"golang.org/x/crypto/bcrypt"
 	"lib-manager/pkg/types"
@@ -17,17 +18,17 @@ type ViewData struct {
 	Data string
 }
 
-func LoginUser(res http.ResponseWriter, req *http.Request , userName , password string){
+func LoginUser(res http.ResponseWriter, req *http.Request , db *sql.DB, userName , password string){
 
 	var user types.UserDetail
 	var userId int
-
-	db, err := Connection()			// Database connection
 	var errMsg types.ErrMsg
-	if err != nil {
-		errMsg.Msg = "Error in connecting to database"
-	}
-	defer db.Close()
+	// db, err := Connection()			// Database connection
+	// 
+	// if err != nil {
+	// 	errMsg.Msg = "Error in connecting to database"
+	// }
+	// defer db.Close()
 
 	// Check for password authentication
 	rows, _ := db.Query("SELECT id ,userName , hash , admin FROM users WHERE userName = ?", userName)
@@ -101,14 +102,14 @@ func authenticate(res http.ResponseWriter, req *http.Request ,username string , 
 
 
 // Remove Session From Database and redirect to Login page
-func Logout(res http.ResponseWriter, req *http.Request , userId int ){
+func Logout(res http.ResponseWriter, req *http.Request , db *sql.DB, userId int ){
 
-	db, err := Connection()
-	var errMsg types.ErrMsg
-	if err != nil {
-		errMsg.Msg = "Error in connecting to database"
-	}
-	defer db.Close()
+	// db, err := Connection()
+	// var errMsg types.ErrMsg
+	// if err != nil {
+	// 	errMsg.Msg = "Error in connecting to database"
+	// }
+	// defer db.Close()
 
 // Empty cookie and kill the session
 	req.Header.Set("Cookie", "" )

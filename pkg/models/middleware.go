@@ -3,6 +3,7 @@ package models
 import (
 	"fmt"
 	"net/http"
+	"database/sql"
 	"lib-manager/pkg/types"
   _ "github.com/go-sql-driver/mysql"
 
@@ -22,16 +23,16 @@ const (
 // Returns "Cookie Was Altered On User Side" when session id on server and user not matches
 // Returns "OK" If cookie is validated
 
-func Middleware(res http.ResponseWriter, req *http.Request ) (string,int , string ,int){
+func Middleware(res http.ResponseWriter, req *http.Request, db *sql.DB ) (string,int , string ,int){
 	
 	var sessionInfo types.ValidateCookie
 	
 	// Connect To Database
-	db, err := Connection()
-	if err != nil {
-		fmt.Println("Error in connecting to database")
-	}
-	defer db.Close()
+	// db, err := Connection()
+	// if err != nil {
+	// 	fmt.Println("Error in connecting to database")
+	// }
+	// defer db.Close()
 
 	// Validaring cookie
 	cookieId := req.Header.Get("Cookie")

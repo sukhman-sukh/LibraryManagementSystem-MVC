@@ -15,11 +15,19 @@ import (
 //      -1: Requested- check-out
 // }
 func GetClient(res http.ResponseWriter, req *http.Request) {
-	status, userID , _ , admin := models.Middleware(res,req)
+
+	db, err := models.Connection()
+    var errMsg types.ErrMsg
+    if err!= nil {
+        errMsg.Msg = "Error in connecting to database"
+    }
+    defer db.Close()
+
+	status, userID , _ , admin := models.Middleware(res,req ,db)
 
 	if(status == "OK"){
-	_ ,books := models.GetBooks(res ,req)
-	_, reqBook := models.GetReqBooks(res ,req , userID , admin)
+	_ ,books := models.GetBooks(db)
+	_, reqBook := models.GetReqBooks(db, userID , admin)
 
 	data := types.Data{
 		UserName: userName,
@@ -44,11 +52,17 @@ func Checkout(res http.ResponseWriter, req *http.Request){
 
 func CheckoutSubmit(res http.ResponseWriter, req *http.Request){
 
+	db, err := models.Connection()
+    var errMsg types.ErrMsg
+    if err!= nil {
+        errMsg.Msg = "Error in connecting to database"
+    }
+    defer db.Close()
 
-	status, userID , _ , _ := models.Middleware(res,req)
+	status, userID , _ , _ := models.Middleware(res,req,db)
 	bookId := req.FormValue("bookId");
 
-	status = models.Checkout(res, req , bookId , userID)
+	status = models.Checkout(res, req ,db, bookId , userID)
 
 	if(status == "OK"){
 		http.Redirect(res, req, "/", http.StatusSeeOther)
@@ -65,9 +79,15 @@ func Checkin(res http.ResponseWriter, req *http.Request){
 
 
 func CheckinSubmit(res http.ResponseWriter, req *http.Request){
+	db, err := models.Connection()
+    var errMsg types.ErrMsg
+    if err!= nil {
+        errMsg.Msg = "Error in connecting to database"
+    }
+    defer db.Close()
 
 	reqId := req.FormValue("reqId");
-	status := models.Checkin(res, req , reqId)
+	status := models.Checkin(res, req ,db, reqId)
 
 	if(status == "OK"){
 		http.Redirect(res, req, "/", http.StatusSeeOther)

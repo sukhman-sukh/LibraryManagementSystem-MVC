@@ -15,28 +15,43 @@ func LogIn(res http.ResponseWriter, req *http.Request){
 }
 
 
-// To open login page with errors
-func LogInError(res http.ResponseWriter, req *http.Request , error types.ErrMsg){
-	t := views.LogIn()
-	res.WriteHeader(http.StatusOK)
-	t.Execute(res,error )
-}
+// // To open login page with errors
+// func LogInError(res http.ResponseWriter, req *http.Request , error types.ErrMsg){
+// 	t := views.LogIn()
+// 	res.WriteHeader(http.StatusOK)
+// 	t.Execute(res,error )
+// }
 
 //  Check credentials for login
 func ChecklogIn(res http.ResponseWriter, req *http.Request) {
 	username := req.FormValue("username")
 	password := req.FormValue("password")
-	models.LoginUser(res ,req, username , password)
+
+	db, err := models.Connection()
+    var errMsg types.ErrMsg
+    if err!= nil {
+        errMsg.Msg = "Error in connecting to database"
+    }
+    defer db.Close()
+
+	models.LoginUser(res ,req,db, username , password)
 
 }
 
 // Logout And End Session
 func Logout(res http.ResponseWriter, req *http.Request){
-	status,userID,_,_ := models.Middleware(res,req)
+	db, err := models.Connection()
+    var errMsg types.ErrMsg
+    if err!= nil {
+        errMsg.Msg = "Error in connecting to database"
+    }
+    defer db.Close()
+
+	status,userID,_,_ := models.Middleware(res,req,db)
 
 	if(status == "OK"){
 		
-		models.Logout(res , req , userID)	
+		models.Logout(res , req ,db, userID)	
 	}else{
 		http.Redirect(res, req, "/login", http.StatusSeeOther)
 	}
