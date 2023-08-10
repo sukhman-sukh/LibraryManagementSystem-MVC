@@ -1,8 +1,6 @@
 package controllers
 
 import (
-	// "encoding/json"
-	"fmt"
 	"net/http"
 	"lib-manager/pkg/views"
 	"lib-manager/pkg/models"
@@ -17,16 +15,13 @@ func Register(res http.ResponseWriter, req *http.Request) {
 	reEnterPass := req.FormValue("reEnterPass") 
 	adminAccess := req.FormValue("adminAccess")
 
-	fmt.Println(username , password , reEnterPass , adminAccess)
 	status := models.RegisterUser(username , password , reEnterPass , adminAccess)
 	errMsg.Msg = status
 	if(status == "OK"){
-		fmt.Println("+++++++++++++++++++++",status)
 		t := views.StartPage()
 		res.WriteHeader(http.StatusOK)
 		t.Execute(res,status)
 	}else{
-		fmt.Println("+++++++++++++++++++++",status)
 
 		t := views.Register()
 		res.WriteHeader(http.StatusOK)

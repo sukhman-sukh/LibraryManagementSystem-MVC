@@ -10,10 +10,10 @@ func GetClient() *template.Template {
 }
 
 func Checkin() *template.Template {
-	temp := template.Must(template.ParseFiles("templates/screens/checkin.html"))
+	temp := template.Must(template.ParseFiles("templates/screens/reqCheckin.html"))
 	return temp
 }
 func Checkout() *template.Template {
-	temp := template.Must(template.ParseFiles("templates/screens/checkout.html"))
+	temp := template.Must(template.ParseFiles("templates/screens/reqCheckout.html"))
 	return temp
 }

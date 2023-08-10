@@ -10,19 +10,9 @@ import (
 func Start() {
 	fmt.Println("Starting")
 	r := mux.NewRouter()
-	// fs := r.FileServer(http.Dir("/templates/"))
 
 	fs := http.FileServer(http.Dir("./templates/"))
     r.PathPrefix("/templates/").Handler(http.StripPrefix("/templates/", fs))
-	
-	// fs := http.FileServer(http.Dir("/templates/styles/"))
-	// http.Handle("/", http.StripPrefix("/", fs))
-
-	// fs := http.FileServer(http.Dir("/templates"))
-	// http.Handle("/", fs)
-	
-	// s := http.StripPrefix("/static/", http.FileServer(http.Dir(pathCSS+"/pkg/static/")))
-	// r.PathPrefix("/static/").Handler(s)
 
 	r.HandleFunc("/", controllers.Welcome).Methods("GET")
 	

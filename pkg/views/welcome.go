@@ -6,7 +6,6 @@ import (
 
 func StartPage() *template.Template {
 	temp := template.Must(template.ParseFiles("templates/screens/welcome.html"))
-	// sectionID := r.URL.Query().Get("section")
 	return temp
 }
 

@@ -1,10 +1,8 @@
 package controllers
 
 import (
-	"fmt"
 	"lib-manager/pkg/models"
 	"net/http"
-	// "context"
 	"lib-manager/pkg/views"
 )
 
@@ -23,34 +21,15 @@ func Welcome(writer http.ResponseWriter, request *http.Request) {
 
 	
 		if(status == "OK"){
-		// admin, ok := request.Context().Value(adminAuthKey).(int)
+			if admin == 1 {
+				http.Redirect(writer, request, "/admin", http.StatusSeeOther)
 
-		fmt.Println("============================")
-		fmt.Println(admin)
-		fmt.Println("============================")
-		
-
-		if admin == 1 {
-			fmt.Println(writer, "Admin Auth Granted")
-			t := views.GetAdmin()
-			writer.WriteHeader(http.StatusOK)
-			t.Execute(writer, nil)
-
-		} else {
-			fmt.Println(writer, "Not an Admin")
-			t := views.GetClient()
+			} else {
+				http.Redirect(writer, request, "/client", http.StatusSeeOther)
+			}
+		}else{
+			t := views.StartPage()
 			writer.WriteHeader(http.StatusOK)
 			t.Execute(writer, nil)
 		}
-	}else{
-
-		fmt.Println("============================")
-		fmt.Println("Cookie Not Set")
-		fmt.Println("============================")		
-
-		// LogIn(writer , request)
-		t := views.StartPage()
-		writer.WriteHeader(http.StatusOK)
-		t.Execute(writer, nil)
-	}
 }

@@ -14,30 +14,48 @@ body{
 }
 
 .container2{
-
+  position: absolute;
+  margin-top: 2%;
 }
 #list2{
     margin-top: 3%;
 }
-
+#div1 {
+  position: absolute;
+  margin-top: 10%;
+  width: fit-content;
+}
+#div2 {
+  position: absolute;
+  margin-top: 10%;
+  margin-left: -10%;
+  width: fit-content;
+  /* padding-left: 5%; */
+}
+#div3{
+  position: absolute;
+  margin-top: 10%;
+  width: fit-content;
+}
 .list_container{
-    padding-top: 1%;
-    padding-left: 6%;
+    padding-top: 5%;
+    padding-left: 5%;
+    padding-right: 3%;
     height: 25vh;
     width: 30vw;
     
     overflow-x: hidden; 
     overflow-y: auto;
     background-color: skyblue;
-    
+    /* display: hidden; */
     box-shadow: 5px 10px #888888;
 }
 .statusbtn{
     position: relative;
-    margin-left: 30%;
+    margin-left: 20%;
     margin-top: 1%;
     height: 2vh;
-    width: 7vw;
+    width: 9vw;
 }
 
 .statusbtn {
@@ -54,7 +72,7 @@ body{
     /* color: #fff; */
     background-color: #4CAF50;
     border: none;
-    border-radius: 25%;
+    border-radius: 25% ;
     box-shadow: 0 9px #999;
   }
   
@@ -73,4 +91,32 @@ body{
     font-size: x-large;
     margin-left: 90%;
   }
-  
+  #add{
+    position: relative;
+    margin-left: 95% !important;
+    width: 11% !important; 
+  }
+
+  #reqcheckout{
+    position: absolute;
+    width: 20%;
+    margin-left: 108%;
+    margin-top: 12%;
+  }
+  #remove{
+    position: absolute;
+    width: 20%;
+    margin-left: 108%;
+    margin-top: 5%;
+  }
+
+  #checkout{
+    position: absolute;
+    margin-top: 20%;
+    margin-left: 178%;
+  }
+  #checkin{
+    position: absolute;
+    margin-top: 40%;
+    margin-left: 178%;
+  }

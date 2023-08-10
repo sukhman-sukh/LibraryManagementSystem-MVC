@@ -1,16 +1,12 @@
 package controllers
 
 import (
-	// "encoding/json"
-	// "context"
 	"fmt"
 	"net/http"
 	"lib-manager/pkg/views"
 	"lib-manager/pkg/models"
 	"lib-manager/pkg/types"
 )
-
-
 
 // Format
 
@@ -22,32 +18,21 @@ import (
 
 func GetAdmin(res http.ResponseWriter, req *http.Request) {
 
-	status, _ , userName , admin := models.Middleware(res,req)
-
+	status, userId , userName , admin := models.Middleware(res,req)
 
 	if(status == "OK"){
 		fmt.Println("Yes Status is OK ")
-		// Admin:= req.Context().Value(admin).(int)
-		// fmt.Println(Admin)
 		if(admin ==1){	
-			fmt.Println("adminnnnnn")
 
 			_ ,books := models.GetBooks(res ,req)
-			_, reqBook := models.GetReqBooks(res ,req)
+			_, reqBook := models.GetReqBooks(res ,req ,userId,admin)
 			_ , adminReq := models.GetAdminReq(res ,req)
-			// username: userName, data: books, reqdata: reqBook, adminReq: adminReq
-			// var data types.Data 
 			data := types.Data{
 				UserName: userName,
 				Books:     books,
 				ReqBook:  reqBook,
 				AdminReq: adminReq,
 			}
-			
-			// data.UserName = userName
-			// data.Books=books
-            // data.ReqBook=reqBook
-        	// data.AdminReq = adminReq
             
 			fmt.Println(data)
 			
@@ -76,12 +61,8 @@ func AdminCheckinSubmit(res http.ResponseWriter, req *http.Request){
 
 	if(status == "OK"){
 		if(admin ==1){	
-			fmt.Println("adminnnnnn")
-			// username := req.FormValue("username")
 
 			reqId := req.FormValue("reqId");
-			// copies := req.FormValue("Copies");
-
 			_ = models.AdminCheckin(res, req , reqId)
 
 			if(status == "OK"){
@@ -93,8 +74,6 @@ func AdminCheckinSubmit(res http.ResponseWriter, req *http.Request){
 	}else{
 		http.Redirect(res, req, "/", http.StatusSeeOther)
 	}
-
-	// http.Redirect(res, req, "/login", http.StatusSeeOther)
 }
 
 func AdminAdd(res http.ResponseWriter, req *http.Request){
@@ -109,8 +88,6 @@ func AdminAddSubmit(res http.ResponseWriter, req *http.Request){
 
 	if(status == "OK"){
 		if(admin ==1){	
-			fmt.Println("adminn Addd")
-			// username := req.FormValue("username")
 
 			bookname := req.FormValue("bookname");
 			Author := req.FormValue("Author")
@@ -140,11 +117,8 @@ func AdminCheckoutSubmit(res http.ResponseWriter, req *http.Request){
 
 	if(status == "OK"){
 		if(admin ==1){	
-			fmt.Println("adminnnnnn")
-			// username := req.FormValue("username")
 
 			reqId := req.FormValue("reqId");
-
 			status := models.AdminCheckout(res, req , reqId)
 
 			if(status == "OK"){
@@ -172,8 +146,6 @@ func AdminRemoveSubmit(res http.ResponseWriter, req *http.Request){
 
 	if(status == "OK"){
 		if(admin ==1){	
-			fmt.Println("adminnnnnn")
-			// username := req.FormValue("username")
 
 			bookId := req.FormValue("bookId");
 			copies := req.FormValue("Copies");
@@ -203,11 +175,8 @@ func AdminAccept(res http.ResponseWriter, req *http.Request){
 
 	if(status == "OK"){
 		if(admin ==1){	
-			fmt.Println("adminnnnnn")
-			// username := req.FormValue("username")
 
 			reqId := req.FormValue("reqId");
-
 			status := models.AdminAccept(res, req , reqId)
 
 			if(status == "OK"){
@@ -227,7 +196,6 @@ func AdminDeny(res http.ResponseWriter, req *http.Request){
 
 	if(status == "OK"){
 		if(admin ==1){	
-			fmt.Println("adminnnnnn")
 
 			reqId := req.FormValue("reqId");
 

@@ -1,8 +1,6 @@
 package controllers
 
 import (
-	// "encoding/json"
-	"fmt"
 	"net/http"
 	"lib-manager/pkg/models"
 	"lib-manager/pkg/views"
@@ -16,14 +14,13 @@ import (
 //     0: "Check-out"
 //      -1: Requested- check-out
 // }
-
-
 func GetClient(res http.ResponseWriter, req *http.Request) {
+	status, userID , _ , admin := models.Middleware(res,req)
 
+	if(status == "OK"){
 	_ ,books := models.GetBooks(res ,req)
-	_, reqBook := models.GetReqBooks(res ,req)
-	// username: userName, data: books, reqdata: reqBook, adminReq: adminReq
-	// var data types.Data 
+	_, reqBook := models.GetReqBooks(res ,req , userID , admin)
+
 	data := types.Data{
 		UserName: userName,
 		Books:     books,
@@ -31,11 +28,10 @@ func GetClient(res http.ResponseWriter, req *http.Request) {
 		AdminReq:nil,
 	}
 
-	fmt.Println(data)
 	
 	t := views.GetClient()
 	res.WriteHeader(http.StatusOK)
-	t.Execute(res, data)
+	t.Execute(res, data)}
 
 }
 
@@ -49,14 +45,14 @@ func Checkout(res http.ResponseWriter, req *http.Request){
 func CheckoutSubmit(res http.ResponseWriter, req *http.Request){
 
 
+	status, userID , _ , _ := models.Middleware(res,req)
+	bookId := req.FormValue("bookId");
 
-			reqId := req.FormValue("reqId");
+	status = models.Checkout(res, req , bookId , userID)
 
-			status := models.Checkout(res, req , reqId)
-
-			if(status == "OK"){
-				http.Redirect(res, req, "/", http.StatusSeeOther)
-			}
+	if(status == "OK"){
+		http.Redirect(res, req, "/", http.StatusSeeOther)
+	}
 
 }
 
@@ -70,15 +66,12 @@ func Checkin(res http.ResponseWriter, req *http.Request){
 
 func CheckinSubmit(res http.ResponseWriter, req *http.Request){
 
+	reqId := req.FormValue("reqId");
+	status := models.Checkin(res, req , reqId)
 
-
-			reqId := req.FormValue("reqId");
-
-			status := models.Checkin(res, req , reqId)
-
-			if(status == "OK"){
-				http.Redirect(res, req, "/", http.StatusSeeOther)
-			}
+	if(status == "OK"){
+		http.Redirect(res, req, "/", http.StatusSeeOther)
+	}
 
 }
 

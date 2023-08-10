@@ -41,7 +41,6 @@ type Books struct {
 
 type ReqBooks struct {
 	ReqId string
-	Date string
 	BookId string
 	UserId string
 	Status string
