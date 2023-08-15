@@ -22,8 +22,7 @@
 
       <div id = "div1" >
         <h2>List of books</h2>
-         <button class="statusbtn" id="reqcheckout" onclick="window.location.href = `/checkout`;" style="background-color: limegreen;"  > Check-Out </button>
-        <div class="list_container container1">
+            <div class="list_container container1">
     
         <table class="list_table">
             <thead>
@@ -45,7 +44,7 @@
             <tr>
                 <script>console.log("{{$i}}")</script>
                 <script>console.log("{{$reqBook}}")</script>
-                {{if ne $reqBook.Copies 0}}
+                {{if ge $reqBook.Copies 1}}
                 <td>{{$reqBook.BookId}}</td>
                 <td></td>
                 <td>||</td>
@@ -56,12 +55,21 @@
                 <td></td>
                 <td>||</td>
                 <td>{{$reqBook.Copies}}</td>
+                <td> 
+
+                    <form action="/checkout" method="POST">
+                        <input type="number"  class="inputField" id="bookId" name="bookId" value="{{$reqBook.BookId}}" style="display: none;" required autofocus><br><br>
+                        <input type="submit" value=" Check-Out " class="statusbtn" class="reqcheckout" style="background-color: limegreen;"  >
+                      </form>                    
+                </td>
+                <td></td>
                 {{end}}
             </tr>
             {{end}}
 
 
         </table>
+
     </div>
    </div>
 
@@ -82,6 +90,9 @@
                     <th>||</th>
                     <th> "User Id " </th>
                     <th></th>
+                    <th>||</th>
+                    <th> "Status" </th>
+                    <th></th>
                 </tr>
             </thead>
 
@@ -97,7 +108,6 @@
                     <td>||</td>
                     <td>{{$reqEntry.UserId}}</td>
                     <td></td>
-
                     
                     {{$Status := ""}}
                     {{$link := ""}}
@@ -107,11 +117,13 @@
                     {{if eq $reqEntry.Status "1"}}
                         {{$color = "white"}}
                         {{$Status = "Requested Check-In"}}
+                        {{$link = "/admin"}}
                         <script>console.log("{{$Status}}")</script>
                     {{end}} 
                     {{if eq $reqEntry.Status "-1"}}
                         {{$color = "white"}}
                         {{$Status = "Requested Check-Out"}}
+                        {{$link = "/admin"}}
                         <script>console.log("{{$Status}}")</script>
                     {{end}}     
                     {{if eq $reqEntry.Status "0"}}
@@ -121,14 +133,14 @@
                     {{end}}   
                     <td>
                      <script>console.log("{{$Status}}")</script>
-
-                        <button class="statusbtn" id="reqbtn"
-                            style="background-color: '{{ $color }}';"        
-                            onclick="window.location.href = '{{ $link }}';"
-                        >
-                            {{ $Status }}
-                        </button>
+                        <form action="{{$link}}" method="POST">
+                            <input type="number"  class="inputField" id="reqId" name="reqId" value ="{{$reqEntry.ReqId}}" style="display: none;"  required autofocus> <br> <br> 
+                            
+                            <input type="submit" value="{{$Status}}" id="submit"class="statusbtn " class ="reqbtn" style="background-color: limegreen;">
+                              
+                        </form>
                     </td>
+                    <td></td>
                     <script>console.log("{{$Status}}")</script>
                     {{end}}
                 </tr>
@@ -136,6 +148,7 @@
 
             </tbody>
         </table>
+
 
     </div>
     <!-- <button class="statusbtn" id="checkout" onclick="window.location.href =' /admin/checkout ' ;"

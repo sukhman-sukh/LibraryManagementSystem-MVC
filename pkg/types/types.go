@@ -30,6 +30,7 @@ type Data struct {
 	Books  []Books
 	ReqBook []ReqBooks
 	AdminReq []AdminReq	
+	IssuedBooks []IssuedBook
 }
 
 type Books struct {
@@ -49,6 +50,13 @@ type ReqBooks struct {
 
 type AdminReq struct {
 	ReqId string
+	UserId string
+	Status string
+}
+
+type IssuedBook struct {
+	ReqId string
+	BookId string
 	UserId string
 	Status string
 }

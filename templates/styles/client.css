@@ -13,10 +13,10 @@ body{
     margin-top: 1%;
 }
 
-.container2{
+/* .container2{
   position: absolute;
   margin-top: 2%;
-}
+} */
 #list2{
     margin-top: 3%;
 }
@@ -37,7 +37,7 @@ body{
   margin-top: 10%;
   width: fit-content;
 }
-.list_container{
+/* .list_container{
     padding-top: 5%;
     padding-left: 5%;
     padding-right: 3%;
@@ -48,8 +48,9 @@ body{
     overflow-y: auto;
     background-color: skyblue;
     /* display: hidden; */
-    box-shadow: 5px 10px #888888;
-}
+    /* box-shadow: 5px 10px #888888;
+}  */
+
 .statusbtn{
     position: relative;
     margin-left: 20%;
@@ -63,7 +64,7 @@ body{
     /* margin-top: 2%;
     margin-left: 5% ; */
     display: inline-block;
-    padding: 0.1% 0.2%;
+    padding: 0.1% 0.0%;
     font-size: 80%;
     cursor: pointer;
     text-align: center;
@@ -97,12 +98,7 @@ body{
     width: 11% !important; 
   }
 
-  #reqcheckout{
-    position: absolute;
-    width: 20%;
-    margin-left: 108%;
-    margin-top: 12%;
-  }
+
   #remove{
     position: absolute;
     width: 20%;
@@ -120,3 +116,48 @@ body{
     margin-top: 40%;
     margin-left: 178%;
   }
+
+  .reqcheckout{
+    position: absolute;
+    width: 20%;
+    margin-left: 108%;
+    margin-top: -12%;
+  }
+  
+  .list_table {
+    border-collapse: collapse;
+    margin: 25px 0;
+    font-size: 0.9em;
+    font-family: sans-serif;
+    min-width: 400px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+.list_table thead tr {
+  background-color: #009879;
+  color: #ffffff;
+  text-align: left;
+}
+
+.list_table th,
+.list_table td {
+    padding: 12px 15px;
+}
+
+.list_table  tbody tr {
+  border-bottom: 1px solid #dddddd;
+}
+
+.list_table tbody tr:nth-of-type(even) {
+  background-color: #f3f3f3;
+}
+
+.list_table tbody tr:last-of-type {
+  border-bottom: 2px solid #009879;
+}
+
+
+.list_table tbody tr.active-row {
+  font-weight: bold;
+  color: #009879;
+}

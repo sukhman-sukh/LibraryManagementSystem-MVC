@@ -31,16 +31,19 @@ func GetAdmin(res http.ResponseWriter, req *http.Request) {
 		fmt.Println("Yes Status is OK ")
 		if(admin ==1){	
 
+			
 			_ ,books := models.GetBooks(db)
-			_, reqBook := models.GetReqBooks(db, userId,admin)
+			_, reqBook := models.GetReqBooks(db, userId )
+			_, issuedBooks := models.GetIssuedBooks(db, userId , admin)
 			_ , adminReq := models.GetAdminReq(db)
 			data := types.Data{
 				UserName: userName,
 				Books:     books,
 				ReqBook:  reqBook,
-				AdminReq: adminReq,
+				AdminReq:adminReq,
+				IssuedBooks: issuedBooks,
 			}
-            
+		
 			fmt.Println(data)
 			
 			t := views.GetAdmin()
@@ -140,7 +143,7 @@ func AdminCheckoutSubmit(res http.ResponseWriter, req *http.Request){
         errMsg.Msg = "Error in connecting to database"
     }
     defer db.Close()
-
+	fmt.Println("+++++++++++++++++++++++++++++++++++++++++++++++++++=")
 	status, _ , _ , admin := models.Middleware(res,req,db)
 
 	if(status == "OK"){

@@ -99,7 +99,7 @@ func GetBooks( db *sql.DB ) (string , []types.Books) {
 }
 
 // Fetch List of Books Requested for checkout
-func GetReqBooks(db *sql.DB , userId int ,  admin int) (string , []types.ReqBooks) {
+func GetReqBooks(db *sql.DB , userId int) (string , []types.ReqBooks) {
     var rows *sql.Rows
     var reqBooks []types.ReqBooks
     var reqBook types.ReqBooks
@@ -111,11 +111,8 @@ func GetReqBooks(db *sql.DB , userId int ,  admin int) (string , []types.ReqBook
     // }
     // defer db.Close()
 
-    if(admin == 1){
-        rows, _ = db.Query("SELECT * FROM requests")
-    }else{
-        rows, _ = db.Query("SELECT * FROM requests WHERE userId=?", userId)
-    }
+
+    rows, _ = db.Query("SELECT * FROM requests WHERE userId=?", userId)
     defer rows.Close()
 
     for rows.Next() {
@@ -143,6 +140,50 @@ func GetReqBooks(db *sql.DB , userId int ,  admin int) (string , []types.ReqBook
 	return "OK" , reqBooks
 
 }
+
+func GetIssuedBooks(db *sql.DB , userId int ,  admin int) (string , []types.IssuedBook ) {
+    var rows *sql.Rows
+    var issuedBooks []types.IssuedBook
+    var issuedBook types.IssuedBook
+
+	// db, err := Connection()
+    // var errMsg types.ErrMsg
+    // if err!= nil {
+    //     errMsg.Msg = "Error in connecting to database"
+    // }
+    // defer db.Close()
+
+    if(admin == 1){
+        rows, _ = db.Query("SELECT * FROM requests")
+    }
+    defer rows.Close()
+
+    for rows.Next() {
+        var reqID, bookId , userId , status string
+
+        if err := rows.Scan(&reqID, &bookId , &userId , &status); err != nil {
+            panic(err)
+        }
+        issuedBook.ReqId = reqID
+        issuedBook.BookId = bookId
+        issuedBook.UserId = userId
+        issuedBook.Status = status
+
+        issuedBooks = append(issuedBooks , issuedBook)    
+    }
+    // If database is empty
+    if len(issuedBooks) == 0 {
+        issuedBook.ReqId = "empty"
+        issuedBook.BookId = "empty"
+        issuedBook.UserId = "empty"
+        issuedBook.Status = "empty"
+        issuedBooks = append(issuedBooks , issuedBook)
+    }
+
+	return "OK" , issuedBooks
+
+}
+
 
 // Fetch list of all clients requesting admin access
 func GetAdminReq( db *sql.DB) (string , []types.AdminReq) {
@@ -229,12 +270,6 @@ func AdminCheckin(res http.ResponseWriter, req *http.Request , db *sql.DB, reqId
 
 // Approve checkoiut of books requested by the user by the admin
 func AdminCheckout(res http.ResponseWriter, req *http.Request , db *sql.DB , reqId string) (string ) {
-	// db, err := Connection()
-    // var errMsg types.ErrMsg
-    // if err!= nil {
-    //     errMsg.Msg = "Error in connecting to database"
-    // }
-    // defer db.Close()
 
     rows, _ := db.Query("SELECT bookId FROM requests WHERE reqId = ?", reqId)
     defer rows.Close()
@@ -244,6 +279,7 @@ func AdminCheckout(res http.ResponseWriter, req *http.Request , db *sql.DB , req
         if err := rows.Scan(&bookId); err != nil {
             panic(err)
         }
+        
 		db.Exec("UPDATE requests SET status = 0 WHERE reqId = ? ", reqId)
 
 		rows, _ := db.Query("SELECT copies FROM books_record WHERE bookId = ?", bookId)

@@ -14,14 +14,6 @@ func LogIn(res http.ResponseWriter, req *http.Request){
 	t.Execute(res,nil )
 }
 
-
-// // To open login page with errors
-// func LogInError(res http.ResponseWriter, req *http.Request , error types.ErrMsg){
-// 	t := views.LogIn()
-// 	res.WriteHeader(http.StatusOK)
-// 	t.Execute(res,error )
-// }
-
 //  Check credentials for login
 func ChecklogIn(res http.ResponseWriter, req *http.Request) {
 	username := req.FormValue("username")

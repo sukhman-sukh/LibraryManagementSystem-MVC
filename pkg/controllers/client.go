@@ -23,17 +23,18 @@ func GetClient(res http.ResponseWriter, req *http.Request) {
     }
     defer db.Close()
 
-	status, userID , _ , admin := models.Middleware(res,req ,db)
+	status, userID , _ , _ := models.Middleware(res,req ,db)
 
 	if(status == "OK"){
 	_ ,books := models.GetBooks(db)
-	_, reqBook := models.GetReqBooks(db, userID , admin)
+	_, reqBook := models.GetReqBooks(db, userID )
 
 	data := types.Data{
 		UserName: userName,
 		Books:     books,
 		ReqBook:  reqBook,
 		AdminReq:nil,
+		IssuedBooks: nil,
 	}
 
 	
