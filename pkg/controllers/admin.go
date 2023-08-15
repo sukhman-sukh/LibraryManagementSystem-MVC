@@ -50,18 +50,12 @@ func GetAdmin(res http.ResponseWriter, req *http.Request) {
 			res.WriteHeader(http.StatusOK)
 			t.Execute(res, data)
 		}else{
-			http.Redirect(res, req, "/login", http.StatusSeeOther)
+			http.Redirect(res, req, "/error403", http.StatusSeeOther)	
 		}
 	}else{
 		http.Redirect(res, req, "/login", http.StatusSeeOther)
 	}
 
-}
-
-func AdminCheckin(res http.ResponseWriter, req *http.Request){
-	t := views.Checkin()
-	res.WriteHeader(http.StatusOK)
-	t.Execute(res, nil)
 }
 
 func AdminCheckinSubmit(res http.ResponseWriter, req *http.Request){
@@ -86,7 +80,7 @@ func AdminCheckinSubmit(res http.ResponseWriter, req *http.Request){
 				http.Redirect(res, req, "/admin", http.StatusSeeOther)
 			}
 		}else{
-			http.Redirect(res, req, "/login", http.StatusSeeOther)
+			http.Redirect(res, req, "/error403", http.StatusSeeOther)	
 		}
 	}else{
 		http.Redirect(res, req, "/", http.StatusSeeOther)
@@ -122,19 +116,13 @@ func AdminAddSubmit(res http.ResponseWriter, req *http.Request){
 				http.Redirect(res, req, "/admin", http.StatusSeeOther)
 			}
 		}else{
-			http.Redirect(res, req, "/login", http.StatusSeeOther)
+			http.Redirect(res, req, "/error403", http.StatusSeeOther)	
 		}
 	}else{
 		http.Redirect(res, req, "/login", http.StatusSeeOther)
 	}
 }
 
-
-func AdminCheckout(res http.ResponseWriter, req *http.Request){
-	t := views.AdminCheckout()
-	res.WriteHeader(http.StatusOK)
-	t.Execute(res, nil)
-}
 
 func AdminCheckoutSubmit(res http.ResponseWriter, req *http.Request){
 	db, err := models.Connection()
@@ -143,7 +131,6 @@ func AdminCheckoutSubmit(res http.ResponseWriter, req *http.Request){
         errMsg.Msg = "Error in connecting to database"
     }
     defer db.Close()
-	fmt.Println("+++++++++++++++++++++++++++++++++++++++++++++++++++=")
 	status, _ , _ , admin := models.Middleware(res,req,db)
 
 	if(status == "OK"){
@@ -156,7 +143,7 @@ func AdminCheckoutSubmit(res http.ResponseWriter, req *http.Request){
 				http.Redirect(res, req, "/admin", http.StatusSeeOther)
 			}
 		}else{
-			http.Redirect(res, req, "/login", http.StatusSeeOther)
+			http.Redirect(res, req, "/error403", http.StatusSeeOther)	
 		}
 	}else{
 		http.Redirect(res, req, "/login", http.StatusSeeOther)
@@ -193,18 +180,13 @@ func AdminRemoveSubmit(res http.ResponseWriter, req *http.Request){
 				http.Redirect(res, req, "/admin", http.StatusSeeOther)
 			}
 		}else{
-			http.Redirect(res, req, "/login", http.StatusSeeOther)
+			http.Redirect(res, req, "/error403", http.StatusSeeOther)	
 		}
 	}else{
 		http.Redirect(res, req, "/login", http.StatusSeeOther)
 	}
 }
 
-func AdminChoose(res http.ResponseWriter, req *http.Request){
-	t := views.AdminChoose()
-    res.WriteHeader(http.StatusOK)
-    t.Execute(res, nil)
-}
 
 func AdminAccept(res http.ResponseWriter, req *http.Request){
 
@@ -227,7 +209,7 @@ func AdminAccept(res http.ResponseWriter, req *http.Request){
 				http.Redirect(res, req, "/admin", http.StatusSeeOther)
 			}
 		}else{
-			http.Redirect(res, req, "/login", http.StatusSeeOther)
+			http.Redirect(res, req, "/error403", http.StatusSeeOther)	
 		}
 	}else{
 		http.Redirect(res, req, "/login", http.StatusSeeOther)
@@ -256,7 +238,7 @@ func AdminDeny(res http.ResponseWriter, req *http.Request){
 				http.Redirect(res, req, "/admin", http.StatusSeeOther)
 			}
 		}else{
-			http.Redirect(res, req, "/login", http.StatusSeeOther)
+			http.Redirect(res, req, "/error403", http.StatusSeeOther)	
 		}
 	}else{
 		http.Redirect(res, req, "/login", http.StatusSeeOther)

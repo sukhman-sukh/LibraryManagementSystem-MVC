@@ -23,12 +23,6 @@ func LoginUser(res http.ResponseWriter, req *http.Request , db *sql.DB, userName
 	var user types.UserDetail
 	var userId int
 	var errMsg types.ErrMsg
-	// db, err := Connection()			// Database connection
-	// 
-	// if err != nil {
-	// 	errMsg.Msg = "Error in connecting to database"
-	// }
-	// defer db.Close()
 
 	// Check for password authentication
 	rows, _ := db.Query("SELECT id ,userName , hash , admin FROM users WHERE userName = ?", userName)

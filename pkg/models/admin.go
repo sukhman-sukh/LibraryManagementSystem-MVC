@@ -14,15 +14,6 @@ import (
 func AdminAdd( res http.ResponseWriter, req *http.Request, db *sql.DB , bookname string, Author string, Copies string) string {
 
     var book types.Books
-    
-	// db, err := Connection()
-	// var errMsg types.ErrMsg
-	// if err != nil {
-	// 	errMsg.Msg = "Error in connecting to database"
-	// 	return errMsg.Msg
-	// }
-	// defer db.Close()
-
 
 	rows, _ := db.Query("SELECT * FROM books_record WHERE bookName = ?", bookname)
     
@@ -44,14 +35,6 @@ func AdminAdd( res http.ResponseWriter, req *http.Request, db *sql.DB , bookname
 // Remove books from the database
 func AdminRemove( res http.ResponseWriter, req *http.Request , db *sql.DB , bookId string,Copies string) (string ) {
 
-	// db, err := Connection()
-	// var errMsg types.ErrMsg
-	// if err != nil {
-	// 	errMsg.Msg = "Error in connecting to database"
-	// 	return errMsg.Msg 
-	// }
-	// defer db.Close()
-
 	db.Exec("UPDATE books_record SET copies = ? where bookId = ?", Copies, bookId)
 
 	return "OK"
@@ -61,13 +44,6 @@ func AdminRemove( res http.ResponseWriter, req *http.Request , db *sql.DB , book
 func GetBooks( db *sql.DB ) (string , []types.Books) {
     var books []types.Books
     var book types.Books
-
-	// db, err := Connection()
-	// var errMsg types.ErrMsg
-	// if err != nil {
-	// 	errMsg.Msg = "Error in connecting to database"
-	// }
-	// defer db.Close()
 
 	rows, _ := db.Query("SELECT bookId, bookName, author, copies FROM books_record")
     defer rows.Close()
@@ -104,14 +80,6 @@ func GetReqBooks(db *sql.DB , userId int) (string , []types.ReqBooks) {
     var reqBooks []types.ReqBooks
     var reqBook types.ReqBooks
 
-	// db, err := Connection()
-    // var errMsg types.ErrMsg
-    // if err!= nil {
-    //     errMsg.Msg = "Error in connecting to database"
-    // }
-    // defer db.Close()
-
-
     rows, _ = db.Query("SELECT * FROM requests WHERE userId=?", userId)
     defer rows.Close()
 
@@ -145,13 +113,6 @@ func GetIssuedBooks(db *sql.DB , userId int ,  admin int) (string , []types.Issu
     var rows *sql.Rows
     var issuedBooks []types.IssuedBook
     var issuedBook types.IssuedBook
-
-	// db, err := Connection()
-    // var errMsg types.ErrMsg
-    // if err!= nil {
-    //     errMsg.Msg = "Error in connecting to database"
-    // }
-    // defer db.Close()
 
     if(admin == 1){
         rows, _ = db.Query("SELECT * FROM requests")
@@ -190,13 +151,6 @@ func GetAdminReq( db *sql.DB) (string , []types.AdminReq) {
     var adminReqs []types.AdminReq
     var adminReq types.AdminReq
 
-	// db, err := Connection()
-    // var errMsg types.ErrMsg
-    // if err!= nil {
-    //     errMsg.Msg = "Error in connecting to database"
-    // }
-    // defer db.Close()
-
     rows, err := db.Query("SELECT * FROM adminReq")
     if err!= nil {
         panic(err)
@@ -230,12 +184,6 @@ func GetAdminReq( db *sql.DB) (string , []types.AdminReq) {
 
 // Approve checkin of books requested by the user by the admin
 func AdminCheckin(res http.ResponseWriter, req *http.Request , db *sql.DB, reqId string) (string ) {
-	// db, err := Connection()
-    // var errMsg types.ErrMsg
-    // if err!= nil {
-    //     errMsg.Msg = "Error in connecting to database"
-    // }
-    // defer db.Close()
 
     rows, err := db.Query("SELECT bookId FROM requests WHERE reqId = ?", reqId)
     if err!= nil {
@@ -326,12 +274,6 @@ func AdminAccept(res http.ResponseWriter, req *http.Request , db *sql.DB, reqId 
 
 // Deny admin request
 func AdminDeny(res http.ResponseWriter, req *http.Request , db *sql.DB , reqId string) (string ) {
-	// db, err := Connection()
-    // var errMsg types.ErrMsg
-    // if err!= nil {
-    //     errMsg.Msg = "Error in connecting to database"
-    // }
-    // defer db.Close()
 		db.Exec("DELETE FROM adminReq WHERE reqId = ? ", reqId)
 	return "OK"
 }

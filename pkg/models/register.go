@@ -14,15 +14,9 @@ import (
 func RegisterUser( db *sql.DB, username , password , reEnterPass , reqAccess string) string{
 	var userId int
 	var errMsg types.ErrMsg
-	// db, err := Connection()
-	// 
-	// if err != nil {
-	// 	errMsg.Msg = "Error in connecting to database"
-	// 	return errMsg.Msg
-	// }
-	// 	defer db.Close()
 
-		// Check for no two Users with same UserName
+
+	// Check for no two Users with same UserName
 		rows, err := db.Query("SELECT * FROM users WHERE userName = ?", username)
 		if err != nil {}
 		if ((rows.Next())) {

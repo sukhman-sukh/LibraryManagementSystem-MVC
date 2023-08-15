@@ -1,0 +1,21 @@
+body {
+    margin: 0%;
+    background-image: url("../assets/dack.jpg");
+    background-repeat: none;
+    font-family: 'Luckiest Guy', cursive;
+    overflow: hidden;
+    font-size: 35px;
+  }
+  
+  path {
+    fill: transparent;
+  }
+  
+  text {
+    fill: #000000;
+  }
+  h1{
+    position: absolute;
+    margin-top: 25%;
+    margin-left: 37%;
+  }

@@ -8,11 +8,11 @@ import (
 )
 
 func Start() {
-	fmt.Println("Starting")
 	r := mux.NewRouter()
 
 	fs := http.FileServer(http.Dir("./templates/"))
     r.PathPrefix("/templates/").Handler(http.StripPrefix("/templates/", fs))
+	r.NotFoundHandler = http.HandlerFunc(controllers.PageNotFound)
 
 	r.HandleFunc("/", controllers.Welcome).Methods("GET")
 	
@@ -25,8 +25,7 @@ func Start() {
 
 	r.HandleFunc("/admin" , controllers.GetAdmin).Methods("GET")
 	r.HandleFunc("/client" , controllers.GetClient).Methods("GET")
-
-	r.HandleFunc("/admin/checkin/", controllers.AdminCheckin).Methods("GET")
+ 
 	r.HandleFunc("/admin/checkin" , controllers.AdminCheckinSubmit).Methods("POST")
 
 	r.HandleFunc("/admin/add", controllers.AdminAdd).Methods("GET")
@@ -34,19 +33,17 @@ func Start() {
 
 	r.HandleFunc("/admin/remove", controllers.AdminRemove).Methods("GET")
 	r.HandleFunc("/admin/remove" , controllers.AdminRemoveSubmit).Methods("POST")
-	
-	r.HandleFunc("/admin/checkout", controllers.AdminCheckout).Methods("GET")
+	 
 	r.HandleFunc("/admin/checkout" , controllers.AdminCheckoutSubmit).Methods("POST")
-
-	r.HandleFunc("/admin/choose", controllers.AdminChoose).Methods("GET")
+ 
 	r.HandleFunc("/admin/choose/accept" , controllers.AdminAccept).Methods("POST")
 	r.HandleFunc("/admin/choose/deny" , controllers.AdminDeny).Methods("POST")
-	
-	r.HandleFunc("/checkout", controllers.Checkout).Methods("GET")
+	 
 	r.HandleFunc("/checkout" , controllers.CheckoutSubmit).Methods("POST")
-
-	r.HandleFunc("/checkin", controllers.Checkin).Methods("GET")
+ 
 	r.HandleFunc("/checkin" , controllers.CheckinSubmit).Methods("POST")
 
+	r.HandleFunc("/error403" , controllers.ForbiddenAccess).Methods("GET")
+	
 	http.ListenAndServe(":8000", r)
 }

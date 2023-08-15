@@ -26,13 +26,6 @@ const (
 func Middleware(res http.ResponseWriter, req *http.Request, db *sql.DB ) (string,int , string ,int){
 	
 	var sessionInfo types.ValidateCookie
-	
-	// Connect To Database
-	// db, err := Connection()
-	// if err != nil {
-	// 	fmt.Println("Error in connecting to database")
-	// }
-	// defer db.Close()
 
 	// Validaring cookie
 	cookieId := req.Header.Get("Cookie")

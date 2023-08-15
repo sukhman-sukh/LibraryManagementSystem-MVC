@@ -44,12 +44,6 @@ func GetClient(res http.ResponseWriter, req *http.Request) {
 
 }
 
-func Checkout(res http.ResponseWriter, req *http.Request){
-	t := views.Checkout()
-    res.WriteHeader(http.StatusOK)
-    t.Execute(res, nil)
-}
-
 
 func CheckoutSubmit(res http.ResponseWriter, req *http.Request){
 
@@ -69,13 +63,6 @@ func CheckoutSubmit(res http.ResponseWriter, req *http.Request){
 		http.Redirect(res, req, "/", http.StatusSeeOther)
 	}
 
-}
-
-
-func Checkin(res http.ResponseWriter, req *http.Request){
-	t := views.Checkin()
-    res.WriteHeader(http.StatusOK)
-    t.Execute(res, nil)
 }
 
 
