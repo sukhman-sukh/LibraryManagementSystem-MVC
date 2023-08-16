@@ -1,3 +1,4 @@
 mvc
 vendor/
 data.yaml
+Dockerfile

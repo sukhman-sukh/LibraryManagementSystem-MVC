@@ -9,153 +9,154 @@
     <script defer src="/templates/scripts/client.js"></script>
     <title>Client Panel</title>
 </head>
+
 <body>
     <h1>Hello ! {{.UserName}}</h1>
 
     <select id="dropdown">
         <option value="select view mode" selected>
             -- select view mode --
-          </option>
-          <option value="available">Available Books</option>
-          <option value="requested">Requested Books</option>
-      </select>
+        </option>
+        <option value="available">Available Books</option>
+        <option value="requested">Requested Books</option>
+    </select>
 
-      <div id = "div1" >
+    <div id="div1">
         <h2>List of books</h2>
-            <div class="list_container container1">
-    
-        <table class="list_table">
-            <thead>
+        <div class="list_container container1">
+
+            <table class="list_table">
+                <thead>
+                    <tr>
+                        <th> "Book Id " </th>
+                        <th></th>
+                        <th>||</th>
+                        <th> "Book Name " </th>
+                        <th></th>
+                        <th>||</th>
+                        <th> "Author " </th>
+                        <th></th>
+                        <th>||</th>
+                        <th> "Copies " </th>
+                    </tr>
+                </thead>
+                {{range $i, $reqBook := .Books}}
+
                 <tr>
-                    <th> "Book Id " </th>
-                    <th></th>
-                    <th>||</th>
-                    <th> "Book Name " </th>
-                    <th></th>
-                    <th>||</th>
-                    <th> "Author " </th>
-                    <th></th>
-                    <th>||</th>
-                    <th> "Copies " </th>
-                </tr>
-            </thead>
-            {{range $i, $reqBook := .Books}}
-
-            <tr>
-                <script>console.log("{{$i}}")</script>
-                <script>console.log("{{$reqBook}}")</script>
-                {{if ge $reqBook.Copies 1}}
-                <td>{{$reqBook.BookId}}</td>
-                <td></td>
-                <td>||</td>
-                <td>{{$reqBook.BookName}}</td>
-                <td></td>
-                <td>||</td>
-                <td>{{$reqBook.Author}}</td>
-                <td></td>
-                <td>||</td>
-                <td>{{$reqBook.Copies}}</td>
-                <td> 
-
-                    <form action="/checkout" method="POST">
-                        <input type="number"  class="inputField" id="bookId" name="bookId" value="{{$reqBook.BookId}}" style="display: none;" required autofocus><br><br>
-                        <input type="submit" value=" Check-Out " class="statusbtn" class="reqcheckout" style="background-color: limegreen;"  >
-                      </form>                    
-                </td>
-                <td></td>
-                {{end}}
-            </tr>
-            {{end}}
-
-
-        </table>
-
-    </div>
-   </div>
-
-    <div id = "div2" >
-    
-    <h2 id="list2">List Of CheckedOut Books</h2>
-
-    <div class="list_container container2">
-
-        <table class="list_table">
-            <thead>
-                <tr>
-                    <th> "Request Id " </th>
-                    <th></th>
-                    <th>||</th>
-                    <th> "Book Id " </th>
-                    <th></th>
-                    <th>||</th>
-                    <th> "User Id " </th>
-                    <th></th>
-                    <th>||</th>
-                    <th> "Status" </th>
-                    <th></th>
-                </tr>
-            </thead>
-
-            <tbody>
-                {{range $i, $reqEntry := .ReqBook}}
-                <tr>
-                    {{if ne $reqEntry.ReqId "empty"}}
-                    <td>{{$reqEntry.ReqId}}</td>
+                    <script>console.log("{{$i}}")</script>
+                    <script>console.log("{{$reqBook}}")</script>
+                    {{if ge $reqBook.Copies 1}}
+                    <td>{{$reqBook.BookId}}</td>
                     <td></td>
                     <td>||</td>
-                    <td>{{$reqEntry.BookId}}</td>
+                    <td>{{$reqBook.BookName}}</td>
                     <td></td>
                     <td>||</td>
-                    <td>{{$reqEntry.UserId}}</td>
+                    <td>{{$reqBook.Author}}</td>
                     <td></td>
-                    
-                    {{$Status := ""}}
-                    {{$link := ""}}
-                    {{$color := "limegreen"}}
-                    <script>console.log("{{$reqEntry.Status}}")</script>
-
-                    {{if eq $reqEntry.Status "1"}}
-                        {{$color = "white"}}
-                        {{$Status = "Requested Check-In"}}
-                        {{$link = "/admin"}}
-                        <script>console.log("{{$Status}}")</script>
-                    {{end}} 
-                    {{if eq $reqEntry.Status "-1"}}
-                        {{$color = "white"}}
-                        {{$Status = "Requested Check-Out"}}
-                        {{$link = "/admin"}}
-                        <script>console.log("{{$Status}}")</script>
-                    {{end}}     
-                    {{if eq $reqEntry.Status "0"}}
-                        {{$link = "/checkin"}}
-                        {{$Status = "Request Checkin"}}
-                        <script>console.log("{{$Status}}")</script>
-                    {{end}}   
+                    <td>||</td>
+                    <td>{{$reqBook.Copies}}</td>
                     <td>
-                     <script>console.log("{{$Status}}")</script>
-                        <form action="{{$link}}" method="POST">
-                            <input type="number"  class="inputField" id="reqId" name="reqId" value ="{{$reqEntry.ReqId}}" style="display: none;"  required autofocus> <br> <br> 
-                            
-                            <input type="submit" value="{{$Status}}" id="submit"class="statusbtn " class ="reqbtn" style="background-color: limegreen;">
-                              
+
+                        <form action="/checkout" method="POST">
+                            <input type="number" class="inputField" id="bookId" name="bookId"
+                                value="{{$reqBook.BookId}}" style="display: none;" required autofocus><br><br>
+                            <input type="submit" value=" Check-Out " class="statusbtn" class="reqcheckout"
+                                style="background-color: limegreen;">
                         </form>
                     </td>
                     <td></td>
-                    <script>console.log("{{$Status}}")</script>
                     {{end}}
                 </tr>
                 {{end}}
 
-            </tbody>
-        </table>
 
+            </table>
 
+        </div>
     </div>
-    <!-- <button class="statusbtn" id="checkout" onclick="window.location.href =' /admin/checkout ' ;"
-    style="background-color: limegreen;"> Check-Out </button>
-<button class="statusbtn" id="checkin" onclick="window.location.href = ' /admin/checkin ';"
-    style="background-color: limegreen;"> Check-in </button> -->
-</div>
+
+    <div id="div2">
+
+        <h2 id="list2">List Of CheckedOut Books</h2>
+
+        <div class="list_container container2">
+
+            <table class="list_table">
+                <thead>
+                    <tr>
+                        <th> "Request Id " </th>
+                        <th></th>
+                        <th>||</th>
+                        <th> "Book Id " </th>
+                        <th></th>
+                        <th>||</th>
+                        <th> "User Id " </th>
+                        <th></th>
+                        <th>||</th>
+                        <th> "Status" </th>
+                        <th></th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {{range $i, $reqEntry := .RequestBook}}
+                    <tr>
+                        {{if ne $reqEntry.RequestId "empty"}}
+                        <td>{{$reqEntry.RequestId}}</td>
+                        <td></td>
+                        <td>||</td>
+                        <td>{{$reqEntry.BookId}}</td>
+                        <td></td>
+                        <td>||</td>
+                        <td>{{$reqEntry.UserId}}</td>
+                        <td></td>
+
+                        {{$Status := ""}}
+                        {{$link := ""}}
+                        {{$color := "limegreen"}}
+                        {{$type := ""}}
+
+                        {{if eq $reqEntry.Status "1"}}
+                        {{$color = "white"}}
+                        {{$Status = "Requested Check-In"}}
+                        {{$link = "/admin"}}
+                        {{end}}
+
+                        {{if eq $reqEntry.Status "-1"}}
+                        {{$color = "white"}}
+                        {{$Status = "Requested Check-Out"}}
+                        {{$link = "/admin"}}
+                        {{end}}
+
+                        {{if eq $reqEntry.Status "0"}}
+                        {{$link = "/checkin"}}
+                        {{$Status = "Request Checkin"}}
+                        {{$type = "submit"}}
+                        {{end}}
+
+                        <td>
+
+                            <form action="{{$link}}" method="POST">
+                                <input type="number" class="inputField" id="reqId" name="reqId"
+                                    value="{{$reqEntry.RequestId}}" style="display: none;" required autofocus> <br> <br>
+
+                                <input type="{{$type}}" value="{{$Status}}" id="submit" class="statusbtn "
+                                    class="reqbtn" style="background-color: limegreen;">
+
+                            </form>
+                        </td>
+                        <td></td>
+                        {{end}}
+                    </tr>
+                    {{end}}
+
+                </tbody>
+            </table>
+
+
+        </div>
+    </div>
 
     <button id="logout" onclick="window.location.href = '/logout';"> Log-Out</button>
 </body>

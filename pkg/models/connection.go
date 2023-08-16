@@ -1,20 +1,19 @@
 package models
 
 import (
-
 	"context"
-	"log"
+	"database/sql"
 	"fmt"
+	"lib-manager/pkg/types"
+	"log"
 	"os"
 	"time"
-	"database/sql"
-	"gopkg.in/yaml.v3"
-	"lib-manager/pkg/types"
-	_ "github.com/go-sql-driver/mysql"
 
+	_ "github.com/go-sql-driver/mysql"
+	"gopkg.in/yaml.v3"
 )
 
-func dsn() string {  
+func dsn() string {
 
 	configFile, err := os.Open("data.yaml")
 	if err != nil {
@@ -31,27 +30,26 @@ func dsn() string {
 
 	return fmt.Sprintf("%s:%s@tcp(%s)/%s", config.DB_USERNAME, config.DB_PASSWORD, config.DB_HOST, config.DB_NAME)
 
-    }
+}
 
-func Connection() (*sql.DB, error) {  
-	db, err := sql.Open("mysql", dsn())  
-	if err != nil {  
+func Connection() (*sql.DB, error) {
+	db, err := sql.Open("mysql", dsn())
+	if err != nil {
 		log.Printf("Error: %s when opening DB", err)
 		return nil, err
 	}
 
-    db.SetMaxOpenConns(20)
-    db.SetMaxIdleConns(20)
-    db.SetConnMaxLifetime(time.Minute * 5)
+	db.SetMaxOpenConns(20)
+	db.SetMaxIdleConns(20)
+	db.SetConnMaxLifetime(time.Minute * 5)
 
-    ctx, cancelfunc := context.WithTimeout(context.Background(), 5*time.Second)
-    defer cancelfunc()
-    err = db.PingContext(ctx)
-    if err != nil {
-        fmt.Printf("Errors %s pinging DB", err)
-        return nil, err
-    }
-    log.Printf("Connected to DB successfully\n")
+	ctx, cancelfunc := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancelfunc()
+	err = db.PingContext(ctx)
+	if err != nil {
+		fmt.Printf("Errors %s pinging DB", err)
+		return nil, err
+	}
+	log.Printf("Connected to DB successfully\n")
 	return db, err
 }
-

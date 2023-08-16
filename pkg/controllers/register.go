@@ -1,46 +1,43 @@
 package controllers
 
 import (
-	"net/http"
-	"lib-manager/pkg/views"
 	"lib-manager/pkg/models"
-	"lib-manager/pkg/types"
+	"lib-manager/pkg/views"
+	"net/http"
 )
 
 // To submit registration form
-func Register(res http.ResponseWriter, req *http.Request) {
-	var errMsg types.ErrMsg
-	username := req.FormValue("username")
-	password := req.FormValue("password")
-	reEnterPass := req.FormValue("reEnterPass") 
-	adminAccess := req.FormValue("adminAccess")
+func Register(writer http.ResponseWriter, request *http.Request) {
 
+	username := request.FormValue("username")
+	password := request.FormValue("password")
+	reEnterPass := request.FormValue("reEnterPass")
+	adminAccess := request.FormValue("adminAccess")
 
 	db, err := models.Connection()
-    if err!= nil {
-        errMsg.Msg = "Error in connecting to database"
-    }
-    defer db.Close()
+	if err != nil {
+		http.Redirect(writer, request, "/error500", http.StatusSeeOther)
+	}
+	defer db.Close()
 
-	status := models.RegisterUser(db ,username , password , reEnterPass , adminAccess)
-	errMsg.Msg = status
-	if(status == "OK"){
+	status := models.RegisterUser(db, username, password, reEnterPass, adminAccess)
+
+	if status == "OK" {
 		t := views.StartPage()
-		res.WriteHeader(http.StatusOK)
-		t.Execute(res,status)
-	}else{
+		writer.WriteHeader(http.StatusOK)
+		t.Execute(writer, status)
+	} else {
 
 		t := views.Register()
-		res.WriteHeader(http.StatusOK)
-		t.Execute(res,errMsg)
+		writer.WriteHeader(http.StatusOK)
+		t.Execute(writer, status)
 	}
-
 
 }
 
 // To open register page
-func RegisterPage(res http.ResponseWriter, req *http.Request){
+func RegisterPage(writer http.ResponseWriter, request *http.Request) {
 	t := views.Register()
-	res.WriteHeader(http.StatusOK)
-	t.Execute(res,nil )
+	writer.WriteHeader(http.StatusOK)
+	t.Execute(writer, nil)
 }

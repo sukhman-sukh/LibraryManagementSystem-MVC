@@ -9,7 +9,6 @@ func GetAdmin() *template.Template {
 	return temp
 }
 
-
 func AdminAdd() *template.Template {
 	temp := template.Must(template.ParseFiles("templates/screens/addBooks.html"))
 	return temp
@@ -17,5 +16,5 @@ func AdminAdd() *template.Template {
 
 func AdminRemove() *template.Template {
 	temp := template.Must(template.ParseFiles("templates/screens/removeBooks.html"))
-    return temp
+	return temp
 }

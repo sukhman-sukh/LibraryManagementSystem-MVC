@@ -1,20 +1,24 @@
 package controllers
 
 import (
-	"net/http"
 	"lib-manager/pkg/views"
+	"net/http"
 )
 
-func PageNotFound(res http.ResponseWriter, req *http.Request){
+func PageNotFound(writer http.ResponseWriter, request *http.Request) {
 	t := views.PageNotFound()
-	res.WriteHeader(http.StatusOK)
-	t.Execute(res,nil )
+	writer.WriteHeader(http.StatusOK)
+	t.Execute(writer, nil)
 }
 
-func ForbiddenAccess(res http.ResponseWriter, req *http.Request){
+func ForbiddenAccess(writer http.ResponseWriter, request *http.Request) {
 	t := views.ForbiddenAccess()
-	res.WriteHeader(http.StatusOK)
-	t.Execute(res,nil )
+	writer.WriteHeader(http.StatusOK)
+	t.Execute(writer, nil)
 }
 
-
+func InternalError(writer http.ResponseWriter, request *http.Request) {
+	t := views.InternalError()
+	writer.WriteHeader(http.StatusOK)
+	t.Execute(writer, nil)
+}

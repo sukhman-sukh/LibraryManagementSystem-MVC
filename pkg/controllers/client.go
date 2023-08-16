@@ -1,85 +1,80 @@
 package controllers
 
 import (
-	"net/http"
 	"lib-manager/pkg/models"
-	"lib-manager/pkg/views"
 	"lib-manager/pkg/types"
+	"lib-manager/pkg/views"
+	"net/http"
 )
 
 // Format
 
-// bookStatus{
-//     1 : "Requested Check-In"
-//     0: "Check-out"
-//      -1: Requested- check-out
-// }
-func GetClient(res http.ResponseWriter, req *http.Request) {
+//	bookStatus{
+//	    1 : "Requested Check-In"
+//	    0: "Check-out"
+//	     -1: Requested- check-out
+//	}
+func GetClient(writer http.ResponseWriter, request *http.Request) {
 
 	db, err := models.Connection()
-    var errMsg types.ErrMsg
-    if err!= nil {
-        errMsg.Msg = "Error in connecting to database"
-    }
-    defer db.Close()
-
-	status, userID , _ , _ := models.Middleware(res,req ,db)
-
-	if(status == "OK"){
-	_ ,books := models.GetBooks(db)
-	_, reqBook := models.GetReqBooks(db, userID )
-
-	data := types.Data{
-		UserName: userName,
-		Books:     books,
-		ReqBook:  reqBook,
-		AdminReq:nil,
-		IssuedBooks: nil,
+	if err != nil {
+		http.Redirect(writer, request, "/error500", http.StatusSeeOther)
 	}
+	defer db.Close()
 
-	
-	t := views.GetClient()
-	res.WriteHeader(http.StatusOK)
-	t.Execute(res, data)}
+	status, userID, _, _ := models.Middleware(writer, request, db)
 
-}
+	if status == "OK" {
+		_, books := models.GetBooks(db)
+		_, requestBook := models.GetRequestBooks(db, userID)
 
+		data := types.Data{
+			UserName:     userName,
+			Books:        books,
+			RequestBook:  requestBook,
+			AdminRequest: nil,
+			IssuedBooks:  nil,
+		}
 
-func CheckoutSubmit(res http.ResponseWriter, req *http.Request){
-
-	db, err := models.Connection()
-    var errMsg types.ErrMsg
-    if err!= nil {
-        errMsg.Msg = "Error in connecting to database"
-    }
-    defer db.Close()
-
-	status, userID , _ , _ := models.Middleware(res,req,db)
-	bookId := req.FormValue("bookId");
-
-	status = models.Checkout(res, req ,db, bookId , userID)
-
-	if(status == "OK"){
-		http.Redirect(res, req, "/", http.StatusSeeOther)
+		t := views.GetClient()
+		writer.WriteHeader(http.StatusOK)
+		t.Execute(writer, data)
 	}
 
 }
 
+func CheckoutSubmit(writer http.ResponseWriter, request *http.Request) {
 
-func CheckinSubmit(res http.ResponseWriter, req *http.Request){
 	db, err := models.Connection()
-    var errMsg types.ErrMsg
-    if err!= nil {
-        errMsg.Msg = "Error in connecting to database"
-    }
-    defer db.Close()
+	if err != nil {
+		http.Redirect(writer, request, "/error500", http.StatusSeeOther)
+	}
+	defer db.Close()
 
-	reqId := req.FormValue("reqId");
-	status := models.Checkin(res, req ,db, reqId)
+	status, userID, _, _ := models.Middleware(writer, request, db)
+	bookId := request.FormValue("bookId")
 
-	if(status == "OK"){
-		http.Redirect(res, req, "/", http.StatusSeeOther)
+	status = models.Checkout(writer, request, db, bookId, userID)
+
+	if status == "OK" {
+		http.Redirect(writer, request, "/", http.StatusSeeOther)
 	}
 
 }
 
+func CheckinSubmit(writer http.ResponseWriter, request *http.Request) {
+	db, err := models.Connection()
+
+	if err != nil {
+		http.Redirect(writer, request, "/error500", http.StatusSeeOther)
+	}
+	defer db.Close()
+
+	requestId := request.FormValue("reqId")
+	status := models.Checkin(writer, request, db, requestId)
+
+	if status == "OK" {
+		http.Redirect(writer, request, "/", http.StatusSeeOther)
+	}
+
+}

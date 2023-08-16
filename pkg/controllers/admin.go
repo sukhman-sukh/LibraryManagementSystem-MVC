@@ -1,248 +1,226 @@
 package controllers
 
 import (
-	"fmt"
-	"net/http"
-	"lib-manager/pkg/views"
 	"lib-manager/pkg/models"
 	"lib-manager/pkg/types"
+	"lib-manager/pkg/views"
+	"net/http"
 )
 
-// Format
-
-// bookStatus{
-//     1 : "Requested Check-In"
-//     0: "Check-out"
-//      -1: Requested- check-out
-// }
-
-func GetAdmin(res http.ResponseWriter, req *http.Request) {
+// Mapping Code to status
+//
+//	bookStatus{
+//	    1 : "Requested Check-In"
+//	    0: "Check-out"
+//	     -1: Requested- check-out
+//	}
+func GetAdmin(writer http.ResponseWriter, request *http.Request) {
 
 	db, err := models.Connection()
-    var errMsg types.ErrMsg
-    if err!= nil {
-        errMsg.Msg = "Error in connecting to database"
-    }
-    defer db.Close()
+	if err != nil {
+		http.Redirect(writer, request, "/error500", http.StatusSeeOther)
+	}
+	defer db.Close()
 
-	status, userId , userName , admin := models.Middleware(res,req , db)
+	status, userId, userName, admin := models.Middleware(writer, request, db)
 
-	if(status == "OK"){
-		fmt.Println("Yes Status is OK ")
-		if(admin ==1){	
+	if status == "OK" {
+		if admin == 1 {
 
-			
-			_ ,books := models.GetBooks(db)
-			_, reqBook := models.GetReqBooks(db, userId )
-			_, issuedBooks := models.GetIssuedBooks(db, userId , admin)
-			_ , adminReq := models.GetAdminReq(db)
+			_, books := models.GetBooks(db)
+			_, requestBook := models.GetRequestBooks(db, userId)
+			_, issuedBooks := models.GetIssuedBooks(db, userId, admin)
+			_, adminRequest := models.GetAdminRequest(db)
 			data := types.Data{
-				UserName: userName,
-				Books:     books,
-				ReqBook:  reqBook,
-				AdminReq:adminReq,
-				IssuedBooks: issuedBooks,
+				UserName:     userName,
+				Books:        books,
+				RequestBook:  requestBook,
+				AdminRequest: adminRequest,
+				IssuedBooks:  issuedBooks,
 			}
-		
-			fmt.Println(data)
-			
 			t := views.GetAdmin()
-			res.WriteHeader(http.StatusOK)
-			t.Execute(res, data)
-		}else{
-			http.Redirect(res, req, "/error403", http.StatusSeeOther)	
+			writer.WriteHeader(http.StatusOK)
+			t.Execute(writer, data)
+		} else {
+			http.Redirect(writer, request, "/error403", http.StatusSeeOther)
 		}
-	}else{
-		http.Redirect(res, req, "/login", http.StatusSeeOther)
+	} else {
+		http.Redirect(writer, request, "/login", http.StatusSeeOther)
 	}
 
 }
 
-func AdminCheckinSubmit(res http.ResponseWriter, req *http.Request){
+func AdminCheckinSubmit(writer http.ResponseWriter, request *http.Request) {
 
 	db, err := models.Connection()
-    var errMsg types.ErrMsg
-    if err!= nil {
-        errMsg.Msg = "Error in connecting to database"
-    }
-    defer db.Close()
 
-	status, _ , _ , admin := models.Middleware(res,req , db)
+	if err != nil {
+		http.Redirect(writer, request, "/error500", http.StatusSeeOther)
+	}
+	defer db.Close()
 
+	status, _, _, admin := models.Middleware(writer, request, db)
 
-	if(status == "OK"){
-		if(admin ==1){	
+	if status == "OK" {
+		if admin == 1 {
 
-			reqId := req.FormValue("reqId");
-			_ = models.AdminCheckin(res, req ,db , reqId)
+			requestId := request.FormValue("reqId")
+			_ = models.AdminCheckin(writer, request, db, requestId)
 
-			if(status == "OK"){
-				http.Redirect(res, req, "/admin", http.StatusSeeOther)
+			if status == "OK" {
+				http.Redirect(writer, request, "/admin", http.StatusSeeOther)
 			}
-		}else{
-			http.Redirect(res, req, "/error403", http.StatusSeeOther)	
+		} else {
+			http.Redirect(writer, request, "/error403", http.StatusSeeOther)
 		}
-	}else{
-		http.Redirect(res, req, "/", http.StatusSeeOther)
+	} else {
+		http.Redirect(writer, request, "/error500", http.StatusSeeOther)
 	}
 }
 
-func AdminAdd(res http.ResponseWriter, req *http.Request){
+func AdminAdd(writer http.ResponseWriter, request *http.Request) {
 	t := views.AdminAdd()
-	res.WriteHeader(http.StatusOK)
-	t.Execute(res, nil)
+	writer.WriteHeader(http.StatusOK)
+	t.Execute(writer, nil)
 }
 
-func AdminAddSubmit(res http.ResponseWriter, req *http.Request){
+func AdminAddSubmit(writer http.ResponseWriter, request *http.Request) {
 
 	db, err := models.Connection()
-    var errMsg types.ErrMsg
-    if err!= nil {
-        errMsg.Msg = "Error in connecting to database"
-    }
-    defer db.Close()
-	status, _ , _ , admin := models.Middleware(res,req, db)
+	if err != nil {
+		http.Redirect(writer, request, "/error500", http.StatusSeeOther)
+	}
+	defer db.Close()
+	status, _, _, admin := models.Middleware(writer, request, db)
 
+	if status == "OK" {
+		if admin == 1 {
 
-	if(status == "OK"){
-		if(admin ==1){	
+			bookname := request.FormValue("bookname")
+			Author := request.FormValue("Author")
+			Copies := request.FormValue("Copies")
 
-			bookname := req.FormValue("bookname");
-			Author := req.FormValue("Author")
-			Copies := req.FormValue("Copies");
-
-			status := models.AdminAdd(res, req ,db , bookname, Author, Copies)
-			if(status == "OK"){
-				http.Redirect(res, req, "/admin", http.StatusSeeOther)
+			status := models.AdminAdd(writer, request, db, bookname, Author, Copies)
+			if status == "OK" {
+				http.Redirect(writer, request, "/admin", http.StatusSeeOther)
 			}
-		}else{
-			http.Redirect(res, req, "/error403", http.StatusSeeOther)	
+		} else {
+			http.Redirect(writer, request, "/error403", http.StatusSeeOther)
 		}
-	}else{
-		http.Redirect(res, req, "/login", http.StatusSeeOther)
+	} else {
+		http.Redirect(writer, request, "/login", http.StatusSeeOther)
 	}
 }
 
-
-func AdminCheckoutSubmit(res http.ResponseWriter, req *http.Request){
+func AdminCheckoutSubmit(writer http.ResponseWriter, request *http.Request) {
 	db, err := models.Connection()
-    var errMsg types.ErrMsg
-    if err!= nil {
-        errMsg.Msg = "Error in connecting to database"
-    }
-    defer db.Close()
-	status, _ , _ , admin := models.Middleware(res,req,db)
+	if err != nil {
+		http.Redirect(writer, request, "/error500", http.StatusSeeOther)
+	}
+	defer db.Close()
+	status, _, _, admin := models.Middleware(writer, request, db)
 
-	if(status == "OK"){
-		if(admin ==1){	
+	if status == "OK" {
+		if admin == 1 {
 
-			reqId := req.FormValue("reqId");
-			status := models.AdminCheckout(res, req ,db, reqId)
+			requestId := request.FormValue("reqId")
+			status := models.AdminCheckout(writer, request, db, requestId)
 
-			if(status == "OK"){
-				http.Redirect(res, req, "/admin", http.StatusSeeOther)
+			if status == "OK" {
+				http.Redirect(writer, request, "/admin", http.StatusSeeOther)
 			}
-		}else{
-			http.Redirect(res, req, "/error403", http.StatusSeeOther)	
+		} else {
+			http.Redirect(writer, request, "/error403", http.StatusSeeOther)
 		}
-	}else{
-		http.Redirect(res, req, "/login", http.StatusSeeOther)
+	} else {
+		http.Redirect(writer, request, "/login", http.StatusSeeOther)
 	}
 }
 
-func AdminRemove(res http.ResponseWriter, req *http.Request){
+func AdminRemove(writer http.ResponseWriter, request *http.Request) {
 	t := views.AdminRemove()
-    res.WriteHeader(http.StatusOK)
-    t.Execute(res, nil)
+	writer.WriteHeader(http.StatusOK)
+	t.Execute(writer, nil)
 }
 
-
-func AdminRemoveSubmit(res http.ResponseWriter, req *http.Request){
+func AdminRemoveSubmit(writer http.ResponseWriter, request *http.Request) {
 
 	db, err := models.Connection()
-    var errMsg types.ErrMsg
-    if err!= nil {
-        errMsg.Msg = "Error in connecting to database"
-    }
-    defer db.Close()
-	status, _ , _ , admin := models.Middleware(res,req,db)
+	if err != nil {
+		http.Redirect(writer, request, "/error500", http.StatusSeeOther)
+	}
+	defer db.Close()
+	status, _, _, admin := models.Middleware(writer, request, db)
 
+	if status == "OK" {
+		if admin == 1 {
 
-	if(status == "OK"){
-		if(admin ==1){	
+			bookId := request.FormValue("bookId")
+			copies := request.FormValue("Copies")
 
-			bookId := req.FormValue("bookId");
-			copies := req.FormValue("Copies");
+			status := models.AdminRemove(writer, request, db, bookId, copies)
 
-			status := models.AdminRemove(res, req ,db, bookId, copies)
-
-			if(status == "OK"){
-				http.Redirect(res, req, "/admin", http.StatusSeeOther)
+			if status == "OK" {
+				http.Redirect(writer, request, "/admin", http.StatusSeeOther)
 			}
-		}else{
-			http.Redirect(res, req, "/error403", http.StatusSeeOther)	
+		} else {
+			http.Redirect(writer, request, "/error403", http.StatusSeeOther)
 		}
-	}else{
-		http.Redirect(res, req, "/login", http.StatusSeeOther)
+	} else {
+		http.Redirect(writer, request, "/login", http.StatusSeeOther)
 	}
 }
 
-
-func AdminAccept(res http.ResponseWriter, req *http.Request){
+func AdminAccept(writer http.ResponseWriter, request *http.Request) {
 
 	db, err := models.Connection()
-    var errMsg types.ErrMsg
-    if err!= nil {
-        errMsg.Msg = "Error in connecting to database"
-    }
-    defer db.Close()
+	if err != nil {
+		http.Redirect(writer, request, "/error500", http.StatusSeeOther)
+	}
+	defer db.Close()
 
-	status, _ , _ , admin := models.Middleware(res,req,db)
+	status, _, _, admin := models.Middleware(writer, request, db)
 
-	if(status == "OK"){
-		if(admin ==1){	
+	if status == "OK" {
+		if admin == 1 {
 
-			reqId := req.FormValue("reqId");
-			status := models.AdminAccept(res, req ,db , reqId)
+			requestId := request.FormValue("reqId")
+			status := models.AdminAccept(writer, request, db, requestId)
 
-			if(status == "OK"){
-				http.Redirect(res, req, "/admin", http.StatusSeeOther)
+			if status == "OK" {
+				http.Redirect(writer, request, "/admin", http.StatusSeeOther)
 			}
-		}else{
-			http.Redirect(res, req, "/error403", http.StatusSeeOther)	
+		} else {
+			http.Redirect(writer, request, "/error403", http.StatusSeeOther)
 		}
-	}else{
-		http.Redirect(res, req, "/login", http.StatusSeeOther)
+	} else {
+		http.Redirect(writer, request, "/login", http.StatusSeeOther)
 	}
 }
 
-func AdminDeny(res http.ResponseWriter, req *http.Request){
+func AdminDeny(writer http.ResponseWriter, request *http.Request) {
 	db, err := models.Connection()
-    var errMsg types.ErrMsg
-    if err!= nil {
-        errMsg.Msg = "Error in connecting to database"
-    }
-    defer db.Close()
+	if err != nil {
+		http.Redirect(writer, request, "/error500", http.StatusSeeOther)
+	}
+	defer db.Close()
 
-	status, _ , _ , admin := models.Middleware(res,req,db)
+	status, _, _, admin := models.Middleware(writer, request, db)
 
+	if status == "OK" {
+		if admin == 1 {
 
-	if(status == "OK"){
-		if(admin ==1){	
+			requestId := request.FormValue("reqId")
 
-			reqId := req.FormValue("reqId");
+			status := models.AdminAccept(writer, request, db, requestId)
 
-			status := models.AdminAccept(res, req ,db , reqId)
-
-			if(status == "OK"){
-				http.Redirect(res, req, "/admin", http.StatusSeeOther)
+			if status == "OK" {
+				http.Redirect(writer, request, "/admin", http.StatusSeeOther)
 			}
-		}else{
-			http.Redirect(res, req, "/error403", http.StatusSeeOther)	
+		} else {
+			http.Redirect(writer, request, "/error403", http.StatusSeeOther)
 		}
-	}else{
-		http.Redirect(res, req, "/login", http.StatusSeeOther)
+	} else {
+		http.Redirect(writer, request, "/login", http.StatusSeeOther)
 	}
 }
-
-

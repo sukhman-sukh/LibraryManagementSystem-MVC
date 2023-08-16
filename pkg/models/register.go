@@ -1,53 +1,49 @@
 package models
 
 import (
-	"fmt"
 	"database/sql"
+	"fmt"
 	"lib-manager/pkg/types"
+
+	_ "github.com/go-sql-driver/mysql"
 	"golang.org/x/crypto/bcrypt"
-  _ "github.com/go-sql-driver/mysql"
-	
 )
 
-
-
-func RegisterUser( db *sql.DB, username , password , reEnterPass , reqAccess string) string{
+func RegisterUser(db *sql.DB, username, password, reEnterPass, reqAccess string) string {
 	var userId int
-	var errMsg types.ErrMsg
-
+	var errorMessage types.ErrorMessage
 
 	// Check for no two Users with same UserName
-		rows, err := db.Query("SELECT * FROM users WHERE userName = ?", username)
-		if err != nil {}
-		if ((rows.Next())) {
-		errMsg.Msg = "Username is not unique"
-		fmt.Println("Username is not unique")
-		return errMsg.Msg
+	rows, err := db.Query("SELECT * FROM users WHERE userName = ?", username)
+	if err != nil {
+	}
+	if rows.Next() {
+		errorMessage.Message = "Username is not unique"
+		return errorMessage.Message
 	}
 	defer rows.Close()
 
 	hash2, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-	
+
 	done := make(chan bool)
-	go checkAdminList(db, done)																				// Check If there exist a admin in database or not
+	go checkAdminList(db, done) // Check If there exist a admin in database or not
 	admin := <-done
 
-	if(reqAccess == "adminAccess" ){
-		if(admin == false){
-			db.Exec("INSERT INTO users (userName, hash, admin) VALUES (?,?,?)", username , hash2 ,1 )		// No admin in database . Make this user Admin
-		}else{
-			db.Exec("INSERT INTO users (userName, hash, admin) VALUES (?,?,?)", username , hash2 ,0 )		//Add this user to adminReq table and make it client
+	if reqAccess == "adminAccess" {
+		if admin == false {
+			db.Exec("INSERT INTO users (userName, hash, admin) VALUES (?,?,?)", username, hash2, 1) // No admin in database . Make this user Admin
+		} else {
+			db.Exec("INSERT INTO users (userName, hash, admin) VALUES (?,?,?)", username, hash2, 0) //Add this user to adminReq table and make it client
 			_ = db.QueryRow("select id from users where userName = ?", username).Scan(&userId)
-			db.Exec("INSERT INTO adminReq ( userId, status) VALUES(?,?)", userId ,0 )
-				
+			db.Exec("INSERT INTO adminReq ( userId, status) VALUES(?,?)", userId, 0)
+
 		}
-	}else{
-		db.Exec("INSERT INTO users (userName, hash, admin) VALUES (?,?,?)", username , hash2 ,0 )			//Client user withour adminAccess request
+	} else {
+		db.Exec("INSERT INTO users (userName, hash, admin) VALUES (?,?,?)", username, hash2, 0) //Client user withour adminAccess request
 	}
 
 	return "OK"
 }
-
 
 func checkAdminList(db *sql.DB, done chan bool) {
 	admin := false
@@ -70,5 +66,3 @@ func checkAdminList(db *sql.DB, done chan bool) {
 	done <- admin
 	return
 }
-
-

@@ -7,56 +7,55 @@ type ConfigSet struct {
 	DB_NAME     string `yaml:"DB_NAME"`
 }
 
-type ErrMsg struct{
-	Msg string 	`json:"message"`
+type ErrorMessage struct {
+	Message string `json:"message"`
 }
 
-type UserDetail struct{
-	Id int
-	UserName string 
-	Hash string
-	Admin int
+type UserDetail struct {
+	Id       int
+	UserName string
+	Hash     string
+	Admin    int
 }
 
 type ValidateCookie struct {
-	SessionID string 
-	UserId int
-	Admin int
-	Username string
+	SessionID string
+	UserId    int
+	Admin     int
+	Username  string
 }
 
 type Data struct {
-	UserName string
-	Books  []Books
-	ReqBook []ReqBooks
-	AdminReq []AdminReq	
-	IssuedBooks []IssuedBook
+	UserName     string
+	Books        []Books
+	RequestBook  []RequestBooks
+	AdminRequest []AdminRequest
+	IssuedBooks  []IssuedBook
 }
 
 type Books struct {
-	BookId string
+	BookId   string
 	BookName string
-	Author string
-	Copies int
+	Author   string
+	Copies   int
 }
 
-type ReqBooks struct {
-	ReqId string
-	BookId string
-	UserId string
-	Status string
+type RequestBooks struct {
+	RequestId string
+	BookId    string
+	UserId    string
+	Status    string
 }
 
-
-type AdminReq struct {
-	ReqId string
-	UserId string
-	Status string
+type AdminRequest struct {
+	RequestId string
+	UserId    string
+	Status    string
 }
 
 type IssuedBook struct {
-	ReqId string
-	BookId string
-	UserId string
-	Status string
+	RequestId string
+	BookId    string
+	UserId    string
+	Status    string
 }
