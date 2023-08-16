@@ -67,7 +67,7 @@ func LoginUser(writer http.ResponseWriter, request *http.Request, db *sql.DB, us
 
 			} else {
 				errorMessage.Message = "Incorrect ID or Password"
-				t := views.LogIn()
+				t := views.Welcome("LogIn")
 				writer.WriteHeader(http.StatusOK)
 				t.Execute(writer, errorMessage)
 

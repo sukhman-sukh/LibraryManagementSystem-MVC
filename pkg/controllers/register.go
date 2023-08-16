@@ -23,12 +23,12 @@ func Register(writer http.ResponseWriter, request *http.Request) {
 	status := models.RegisterUser(db, username, password, reEnterPass, adminAccess)
 
 	if status == "OK" {
-		t := views.StartPage()
+		t := views.Welcome("StartPage")
 		writer.WriteHeader(http.StatusOK)
 		t.Execute(writer, status)
 	} else {
 
-		t := views.Register()
+		t := views.Welcome("Register")
 		writer.WriteHeader(http.StatusOK)
 		t.Execute(writer, status)
 	}
@@ -37,7 +37,7 @@ func Register(writer http.ResponseWriter, request *http.Request) {
 
 // To open register page
 func RegisterPage(writer http.ResponseWriter, request *http.Request) {
-	t := views.Register()
+	t := views.Welcome("Register")
 	writer.WriteHeader(http.StatusOK)
 	t.Execute(writer, nil)
 }

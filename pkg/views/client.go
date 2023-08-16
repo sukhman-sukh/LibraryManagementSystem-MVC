@@ -4,7 +4,11 @@ import (
 	"html/template"
 )
 
-func GetClient() *template.Template {
-	temp := template.Must(template.ParseFiles("templates/screens/client.html"))
+func Client(viewMode string) *template.Template {
+	mode := map[string]*template.Template{
+		"GetClient":       getTemplate("client"),
+	}
+
+	temp := mode[viewMode]
 	return temp
 }

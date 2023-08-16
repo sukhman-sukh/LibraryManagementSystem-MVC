@@ -45,12 +45,15 @@ type RequestBooks struct {
 	BookId    string
 	UserId    string
 	Status    string
+	BookName  string
+	UserName  string
 }
 
 type AdminRequest struct {
 	RequestId string
 	UserId    string
 	Status    string
+	UserName  string
 }
 
 type IssuedBook struct {
@@ -58,4 +61,6 @@ type IssuedBook struct {
 	BookId    string
 	UserId    string
 	Status    string
+	BookName  string
+	UserName  string
 }

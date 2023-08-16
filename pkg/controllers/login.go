@@ -8,7 +8,7 @@ import (
 
 // To open login page
 func LogIn(writer http.ResponseWriter, request *http.Request) {
-	t := views.LogIn()
+	t := views.Welcome("LogIn")
 	writer.WriteHeader(http.StatusOK)
 	t.Execute(writer, nil)
 }

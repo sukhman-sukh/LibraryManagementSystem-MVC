@@ -6,19 +6,19 @@ import (
 )
 
 func PageNotFound(writer http.ResponseWriter, request *http.Request) {
-	t := views.PageNotFound()
+	t := views.Errors("PageNotFound")
 	writer.WriteHeader(http.StatusOK)
 	t.Execute(writer, nil)
 }
 
 func ForbiddenAccess(writer http.ResponseWriter, request *http.Request) {
-	t := views.ForbiddenAccess()
+	t := views.Errors("ForbiddenAccess")
 	writer.WriteHeader(http.StatusOK)
 	t.Execute(writer, nil)
 }
 
 func InternalError(writer http.ResponseWriter, request *http.Request) {
-	t := views.InternalError()
+	t := views.Errors("InternalError")
 	writer.WriteHeader(http.StatusOK)
 	t.Execute(writer, nil)
 }

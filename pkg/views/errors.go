@@ -4,17 +4,13 @@ import (
 	"html/template"
 )
 
-func ForbiddenAccess() *template.Template {
-	temp := template.Must(template.ParseFiles("templates/screens/error403.html"))
-	return temp
-}
+func Errors(viewMode string) *template.Template {
+	mode := map[string]*template.Template{
+		"ForbiddenAccess":       getTemplate("error403"),
+		"PageNotFound":       getTemplate("error404"),
+		"InternalError":       getTemplate("error500"),
+	}
 
-func PageNotFound() *template.Template {
-	temp := template.Must(template.ParseFiles("templates/screens/error404.html"))
-	return temp
-}
-
-func InternalError() *template.Template {
-	temp := template.Must(template.ParseFiles("templates/screens/error500.html"))
+	temp := mode[viewMode]
 	return temp
 }

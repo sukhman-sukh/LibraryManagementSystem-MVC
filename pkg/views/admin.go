@@ -4,17 +4,17 @@ import (
 	"html/template"
 )
 
-func GetAdmin() *template.Template {
-	temp := template.Must(template.ParseFiles("templates/screens/admin.html"))
+func Admin(viewMode string) *template.Template {
+	mode := map[string]*template.Template{
+		"GetAdmin":       getTemplate("admin"),
+		"AdminAdd":    getTemplate("addBooks"),
+		"AdminRemove": getTemplate("removeBooks"),
+	}
+
+	temp := mode[viewMode]
 	return temp
 }
 
-func AdminAdd() *template.Template {
-	temp := template.Must(template.ParseFiles("templates/screens/addBooks.html"))
-	return temp
-}
-
-func AdminRemove() *template.Template {
-	temp := template.Must(template.ParseFiles("templates/screens/removeBooks.html"))
-	return temp
+func getTemplate(viewMode string) *template.Template {
+	return template.Must(template.ParseFiles("templates/screens/" + viewMode+".html"))
 }

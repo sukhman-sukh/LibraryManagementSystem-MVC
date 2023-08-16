@@ -4,38 +4,9 @@ import (
 	"database/sql"
 	"lib-manager/pkg/types"
 	"net/http"
-	"strconv"
-    _ "github.com/go-sql-driver/mysql"
+
+	_ "github.com/go-sql-driver/mysql"
 )
-
-// Add Books to Database
-func AdminAdd(writer http.ResponseWriter, request *http.Request, db *sql.DB, bookname string, Author string, Copies string) string {
-
-	var book types.Books
-
-	rows, _ := db.Query("SELECT * FROM books_record WHERE bookName = ?", bookname)
-
-	if !(rows.Next()) {
-		db.Exec("INSERT INTO books_record (bookName, author, copies) VALUES (?, ? ,?)", bookname, Author, Copies)
-		return "OK"
-	}
-
-	if err := rows.Scan(&book.BookId, &book.BookName, &book.Author, &book.Copies); err != nil {
-		panic(err)
-	}
-	Copy, _ := strconv.Atoi(Copies)
-	Copy = book.Copies + Copy
-	db.Exec("UPDATE books_record SET copies = ? where bookName = ?", Copy, bookname)
-
-	return "OK"
-}
-
-// Remove books from the database
-func AdminRemove(writer http.ResponseWriter, request *http.Request, db *sql.DB, bookId string, Copies string) string {
-
-	db.Exec("UPDATE books_record SET copies = ? where bookId = ?", Copies, bookId)
-    return "OK"
-}
 
 // Fetch Books From Database
 func GetBooks(db *sql.DB) (string, []types.Books) {
@@ -70,24 +41,26 @@ func GetBooks(db *sql.DB) (string, []types.Books) {
 }
 
 // Fetch List of Books Requested for checkout
-func GetRequestBooks(db *sql.DB, userId int) (string, []types.RequestBooks) {
+func GetRequestBooks(db *sql.DB, userId int, userName string) (string, []types.RequestBooks) {
 	var rows *sql.Rows
 	var requestBooks []types.RequestBooks
 	var requestBook types.RequestBooks
 
-	rows, _ = db.Query("SELECT * FROM requests WHERE userId=?", userId)
+	rows, _ = db.Query("SELECT requests.reqId, requests.bookId ,requests.userId, requests.status ,books_record.bookName  FROM requests INNER JOIN books_record ON requests.bookId = books_record.bookId WHERE requests.userId=? ", userId)
 	defer rows.Close()
 
 	for rows.Next() {
-		var requestID, bookId, userId, status string
+		var requestID, bookId, userId, status, bookName string
 
-		if err := rows.Scan(&requestID, &bookId, &userId, &status); err != nil {
+		if err := rows.Scan(&requestID, &bookId, &userId, &status, &bookName); err != nil {
 			panic(err)
 		}
 		requestBook.RequestId = requestID
 		requestBook.BookId = bookId
 		requestBook.UserId = userId
 		requestBook.Status = status
+		requestBook.BookName = bookName
+		requestBook.UserName = userName
 
 		requestBooks = append(requestBooks, requestBook)
 	}
@@ -97,31 +70,35 @@ func GetRequestBooks(db *sql.DB, userId int) (string, []types.RequestBooks) {
 		requestBook.BookId = "empty"
 		requestBook.UserId = "empty"
 		requestBook.Status = "empty"
+		requestBook.BookName = "empty"
+		requestBook.UserName = "empty"
 		requestBooks = append(requestBooks, requestBook)
 	}
 	return "OK", requestBooks
 }
 
-func GetIssuedBooks(db *sql.DB, userId int, admin int) (string, []types.IssuedBook) {
+func GetIssuedBooks(db *sql.DB, userId int, admin int, userName string) (string, []types.IssuedBook) {
 	var rows *sql.Rows
 	var issuedBooks []types.IssuedBook
 	var issuedBook types.IssuedBook
 
 	if admin == 1 {
-		rows, _ = db.Query("SELECT * FROM requests")
+		rows, _ = db.Query("SELECT requests.reqId, requests.bookId ,requests.userId, requests.status ,books_record.bookName  FROM requests INNER JOIN books_record ON requests.bookId = books_record.bookId ")
 	}
 	defer rows.Close()
 
 	for rows.Next() {
-		var requestID, bookId, userId, status string
+		var requestID, bookId, userId, status, bookName string
 
-		if err := rows.Scan(&requestID, &bookId, &userId, &status); err != nil {
+		if err := rows.Scan(&requestID, &bookId, &userId, &status, &bookName); err != nil {
 			panic(err)
 		}
 		issuedBook.RequestId = requestID
 		issuedBook.BookId = bookId
 		issuedBook.UserId = userId
 		issuedBook.Status = status
+		issuedBook.BookName = bookName
+		issuedBook.UserName = userName
 
 		issuedBooks = append(issuedBooks, issuedBook)
 	}
@@ -131,9 +108,11 @@ func GetIssuedBooks(db *sql.DB, userId int, admin int) (string, []types.IssuedBo
 		issuedBook.BookId = "empty"
 		issuedBook.UserId = "empty"
 		issuedBook.Status = "empty"
+		issuedBook.BookName = "empty"
+		issuedBook.UserName = "empty"
 		issuedBooks = append(issuedBooks, issuedBook)
 	}
-    return "OK", issuedBooks
+	return "OK", issuedBooks
 }
 
 // Fetch list of all clients requesting admin access
@@ -141,22 +120,22 @@ func GetAdminRequest(db *sql.DB) (string, []types.AdminRequest) {
 	var adminRequests []types.AdminRequest
 	var adminRequest types.AdminRequest
 
-	rows, err := db.Query("SELECT * FROM adminReq")
+	rows, err := db.Query("SELECT adminReq.reqId , adminReq.userId ,adminReq.status , users.userName FROM adminReq INNER JOIN users ON adminReq.userId = users.id")
 	if err != nil {
 		panic(err)
 	}
 	defer rows.Close()
 
 	for rows.Next() {
-		var requestID, userId, status string
+		var requestID, userId, status, userName string
 		// var copies int
-		if err := rows.Scan(&requestID, &userId, &status); err != nil {
+		if err := rows.Scan(&requestID, &userId, &status, &userName); err != nil {
 			panic(err)
 		}
 		adminRequest.RequestId = requestID
 		adminRequest.UserId = userId
 		adminRequest.Status = status
-
+		adminRequest.UserName = userName
 		adminRequests = append(adminRequests, adminRequest)
 	}
 
@@ -165,73 +144,10 @@ func GetAdminRequest(db *sql.DB) (string, []types.AdminRequest) {
 		adminRequest.RequestId = "empty"
 		adminRequest.UserId = "empty"
 		adminRequest.Status = "empty"
-
+		adminRequest.UserName = "empty"
 		adminRequests = append(adminRequests, adminRequest)
 	}
 	return "OK", adminRequests
-}
-
-// Approve checkin of books requested by the user by the admin
-func AdminCheckin(writer http.ResponseWriter, request *http.Request, db *sql.DB, requestId string) string {
-
-	rows, err := db.Query("SELECT bookId FROM requests WHERE reqId = ?", requestId)
-	if err != nil {
-		panic(err)
-	}
-	defer rows.Close()
-
-	for rows.Next() {
-		var bookId string
-		if err := rows.Scan(&bookId); err != nil {
-			panic(err)
-		}
-		db.Exec("DELETE FROM requests WHERE reqId = ? ", requestId)
-
-		rows, err := db.Query("SELECT copies FROM books_record WHERE bookId = ?", bookId)
-		if err != nil {
-			panic(err)
-		}
-		defer rows.Close()
-
-		for rows.Next() {
-			var copies int
-			if err := rows.Scan(&copies); err != nil {
-				panic(err)
-			}
-			FinalCopies := copies + 1
-			db.Exec("UPDATE books_record SET copies =? where bookId =?", FinalCopies, bookId)
-		}
-	}
-	return "OK"
-}
-
-// Approve checkoiut of books requested by the user by the admin
-func AdminCheckout(writer http.ResponseWriter, request *http.Request, db *sql.DB, requestId string) string {
-
-	rows, _ := db.Query("SELECT bookId FROM requests WHERE reqId = ?", requestId)
-	defer rows.Close()
-
-	for rows.Next() {
-		var bookId string
-		if err := rows.Scan(&bookId); err != nil {
-			panic(err)
-		}
-
-		db.Exec("UPDATE requests SET status = 0 WHERE reqId = ? ", requestId)
-
-		rows, _ := db.Query("SELECT copies FROM books_record WHERE bookId = ?", bookId)
-		defer rows.Close()
-
-		for rows.Next() {
-			var copies int
-			if err := rows.Scan(&copies); err != nil {
-				panic(err)
-			}
-			FinalCopies := copies - 1
-			db.Exec("UPDATE books_record SET copies =? where bookId =?", FinalCopies, bookId)
-		}
-	}
-	return "OK"
 }
 
 // Accept admin request

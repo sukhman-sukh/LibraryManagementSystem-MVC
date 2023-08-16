@@ -4,18 +4,13 @@ import (
 	"html/template"
 )
 
-func StartPage() *template.Template {
-	temp := template.Must(template.ParseFiles("templates/screens/welcome.html"))
-	return temp
-}
+func Welcome(viewMode string) *template.Template {
+	mode := map[string]*template.Template{
+		"StartPage":       getTemplate("welcome"),
+		"LogIn":       getTemplate("login"),
+		"Register":       getTemplate("register"),
+	}
 
-func LogIn() *template.Template {
-	temp := template.Must(template.ParseFiles("templates/screens/login.html"))
-
-	return temp
-}
-
-func Register() *template.Template {
-	temp := template.Must(template.ParseFiles("templates/screens/register.html"))
+	temp := mode[viewMode]
 	return temp
 }

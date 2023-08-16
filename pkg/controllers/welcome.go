@@ -32,7 +32,7 @@ func Welcome(writer http.ResponseWriter, request *http.Request) {
 			http.Redirect(writer, request, "/client", http.StatusSeeOther)
 		}
 	} else {
-		t := views.StartPage()
+		t := views.Welcome("StartPage")
 		writer.WriteHeader(http.StatusOK)
 		t.Execute(writer, nil)
 	}
