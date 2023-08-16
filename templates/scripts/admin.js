@@ -1,4 +1,8 @@
-const dropdown = document.getElementById("dropdown");
+const available = document.getElementById("available");
+const requested = document.getElementById("requested");
+const issued = document.getElementById("issued");
+const issuedBooks = document.getElementById("issuedBooks");
+
 const div1 = document.getElementById("div1");
 const div2 = document.getElementById("div2");
 const div3 = document.getElementById("div3");
@@ -12,86 +16,69 @@ let reqbtn = document.getElementById("reqbtn");
 function removeBook() {
     window.location.href = `/admin/remove`
 }
+div3.style.display = "none";
+div2.style.display = "none";
+div1.style.display = "block";
+div4.style.display = "none";
 
 remove.addEventListener("click", (e) => {
     removeBook();
 });
 
+available.addEventListener("click", (e) => {
+    div1.style.display = "block";
+    div3.style.display = "none";
+    div2.style.display = "none";
+    div4.style.display = "none";
+});
 
-div1.style.display = "none";
-div3.style.display = "none";
-div4.style.display = "none";
+requested.addEventListener("click", (e) => {
+    div1.style.display = "none";
+    div3.style.display = "none";
+    div2.style.display = "block";
+    div4.style.display = "none";
+});
 
-console.log("================================")
+issued.addEventListener("click", (e) => {
+    div1.style.display = "none";
+    div2.style.display = "none";
+    div3.style.display = "block";
+    div4.style.display = "none";
+});
 
-dropdown.addEventListener('change', function() {
+issuedBooks.addEventListener("click", (e) => {
+    div1.style.display = "none";
+    div2.style.display = "none";
+    div3.style.display = "none";
+    div4.style.display = "block";
+});
 
-    
-    const selectedDivId = dropdown.value;
-    console.log(selectedDivId)
-    
-    if(selectedDivId == "select view mode ")
-    {   console.log(selectedDivId)
-        div3.style.display = "none";
-        div2.style.display = "none";    
-        div1.style.display = "block";
-        div4.style.display = "none";
-    }else if(selectedDivId == "available"){
-        div1.style.display = "block";
-        div3.style.display = "none";
-        div2.style.display = "none";
-        div4.style.display = "none";
-        console.log(selectedDivId)
-    }else if(selectedDivId == "requested"){
-        div1.style.display = "none";
-        div3.style.display = "none";
-        div2.style.display = "block";
-        div4.style.display = "none";
-        console.log(selectedDivId)
-    }else if(selectedDivId == "issued"){
-        div1.style.display = "none";
-        div2.style.display = "none";
-        div3.style.display = "block";
-        div4.style.display = "none";
-        console.log(selectedDivId)
-    }else if(selectedDivId == "issuedBooks"){
-        div1.style.display = "none";
-        div2.style.display = "none";
-        div3.style.display = "none";
-        div4.style.display = "block";
-    }
+accept.addEventListener("click", (e) => {
+    chooseForm.method = 'POST'
+    chooseForm.action = "/admin/choose/accept"
+    chooseForm.submit();
+});
 
+deny.addEventListener("click", (e) => {
+    chooseForm.method = 'POST'
+    chooseForm.action = "/admin/choose/deny"
+    chooseForm.submit();
 });
 
 
+reqbtn.addEventListener("click", (e) => {
+    statuss = reqbtn.innerHTML;
+    console.log(statuss);
+    if (statuss == "Allow Check-In") {
+        reqForm.method = 'POST'
+        reqForm.action = "/admin/checkin"
+        reqForm.submit();
+    } else {
+        reqForm.method = 'POST'
+        reqForm.action = "/admin/checkout"
+        reqForm.submit();
+    }
 
 
-    accept.addEventListener("click", (e) => {
-        chooseForm.method = 'POST'
-        chooseForm.action = "/admin/choose/accept"
-        chooseForm.submit();
-    });
-
-    deny.addEventListener("click", (e) => {
-        chooseForm.method = 'POST'
-        chooseForm.action = "/admin/choose/deny"
-        chooseForm.submit();
-    });
-
-
-    reqbtn.addEventListener("click", (e) => {
-        statuss = reqbtn.innerHTML;
-        console.log(statuss);
-        if(statuss =="Allow Check-In"){
-            reqForm.method = 'POST'
-            reqForm.action = "/admin/checkin"
-            reqForm.submit();
-        }else{
-            reqForm.method = 'POST'
-            reqForm.action = "/admin/checkout"
-            reqForm.submit();
-        }
-        
-
-    });
+});
 

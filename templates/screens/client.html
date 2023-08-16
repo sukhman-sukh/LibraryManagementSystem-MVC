@@ -13,13 +13,12 @@
 <body>
     <h1>Hello ! {{.UserName}}</h1>
 
-    <select id="dropdown">
-        <option value="select view mode" selected>
-            -- select view mode --
-        </option>
-        <option value="available">Available Books</option>
-        <option value="requested">Requested Books</option>
-    </select>
+    <div id="navbar">
+        <ul>
+            <li><a class="navbtn" id="available">Available</a></li>
+            <li><a class="navbtn" id="requested">Requested Books</a></li>
+        </ul>
+    </div>
 
     <div id="div1">
         <h2>List of books</h2>
@@ -94,7 +93,7 @@
                         <th> "User Name " </th>
                         <th></th>
                         <th>||</th>
-                        <th> "Status" </th>
+                        <th>"Status"</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -111,7 +110,7 @@
                         <td>||</td>
                         <td>{{$reqEntry.UserName}}</td>
                         <td></td>
-
+                        <td></td>
                         {{$Status := ""}}
                         {{$link := ""}}
                         {{$color := "limegreen"}}
