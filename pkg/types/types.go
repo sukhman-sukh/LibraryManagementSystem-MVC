@@ -7,10 +7,6 @@ type ConfigSet struct {
 	DB_NAME     string `yaml:"DB_NAME"`
 }
 
-type ErrorMessage struct {
-	Message string `json:"message"`
-}
-
 type UserDetail struct {
 	Id       int
 	UserName string
@@ -63,4 +59,8 @@ type IssuedBook struct {
 	Status    string
 	BookName  string
 	UserName  string
+}
+
+type Response struct{
+	Message string
 }

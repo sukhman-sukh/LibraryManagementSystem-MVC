@@ -12,7 +12,9 @@
 <body>
 
     <div id="login">
-        {{if eq .Msg "Incorrect ID or Password"}}
+        <script>console.log("{{.Message}}")</script>
+        {{if eq .Message "Incorrect ID or Password"}}
+
         <h2 style="color: red;">*Incorrect ID or Password</h2>
         {{end}}
         <form action="/loginCheck" method="post">

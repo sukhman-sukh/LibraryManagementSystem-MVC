@@ -9,8 +9,6 @@ import (
 )
 
 func TestGetBooks(t *testing.T) {
-
-	fmt.Println("Hello, world!")
 	// Create a mock database connection
 	db, mock, err := sqlmock.New()
 	if err != nil {
@@ -28,11 +26,11 @@ func TestGetBooks(t *testing.T) {
 		WillReturnRows(rows)
 
 	// Call the function with the mock DB
-	status, books := GetBooks(db)
-	fmt.Println(status, books)
+	books, error := GetBooks(db)
+	fmt.Println(error, books)
 
 	// Check the returned status and books
-	assert.Equal(t, "OK", status)
+	assert.Equal(t, nil, error)
 	assert.Equal(t, 2, len(books)) // Check the number of books returned
 
 	// Check the details of the first book

@@ -3,12 +3,12 @@ package controllers
 import (
 	"lib-manager/pkg/models"
 	"lib-manager/pkg/views"
+	"lib-manager/pkg/types"
 	"net/http"
 )
 
 // To submit registration form
 func Register(writer http.ResponseWriter, request *http.Request) {
-
 	username := request.FormValue("username")
 	password := request.FormValue("password")
 	reEnterPass := request.FormValue("reEnterPass")
@@ -21,18 +21,17 @@ func Register(writer http.ResponseWriter, request *http.Request) {
 	defer db.Close()
 
 	status := models.RegisterUser(db, username, password, reEnterPass, adminAccess)
-
-	if status == "OK" {
-		t := views.Welcome("StartPage")
-		writer.WriteHeader(http.StatusOK)
-		t.Execute(writer, status)
-	} else {
-
+	if status != "" {
+		var response types.Response
+		response.Message = status
 		t := views.Welcome("Register")
 		writer.WriteHeader(http.StatusOK)
-		t.Execute(writer, status)
+		t.Execute(writer, response)
+	} else {
+		t := views.Welcome("StartPage")
+		writer.WriteHeader(http.StatusOK)
+		t.Execute(writer, nil)
 	}
-
 }
 
 // To open register page

@@ -1,8 +1,8 @@
-package models
+package middleware
 
 import (
 	"database/sql"
-	"fmt"
+	"errors"
 	"lib-manager/pkg/types"
 	"net/http"
 
@@ -18,40 +18,37 @@ const (
 )
 
 // Validating Cookies
-// Returns "Cookie Not Set" when cookie is not there on user side
-// Returns "Cookie Was Altered On User Side" when session id on server and user not matches
-// Returns "OK" If cookie is validated
-
-func Middleware(writer http.ResponseWriter, request *http.Request, db *sql.DB) (string, int, string, int) {
-
+func Middleware(writer http.ResponseWriter, request *http.Request, db *sql.DB) (int, string, int, error) {
 	var sessionInfo types.ValidateCookie
 
-	// Validaring cookie
 	cookieId := request.Header.Get("Cookie")
 	if len(cookieId) < 10 || cookieId == "SessionID=0000000000000000000000000000000000000000" { //NO Cookies ON User Side
-		fmt.Println("Cookie not set")
-		return "Cookie Not Set", 0, "", 0
+		return 0, "", 0, errors.New("Cookie Not Set")
 	} else {
 		cookieId = request.Header.Get("Cookie")[10:]
 	}
 
-	rows, _ := db.Query("SELECT sessionId, userId FROM cookie")
+	rows, err := db.Query("SELECT sessionId, userId FROM cookie")
+	if err != nil {
+		return 0, "", 0, errors.New("Nothing in sessionID")
+	}
 	for rows.Next() {
 		rows.Scan(&sessionInfo.SessionID, &sessionInfo.UserId)
 	}
 
-	rows, _ = db.Query("SELECT  admin, userName FROM users WHERE id = ?", sessionInfo.UserId)
+	rows, err = db.Query("SELECT  admin, userName FROM users WHERE id = ?", sessionInfo.UserId)
+	if err != nil {
+		return 0, "", 0, errors.New("Nothing in sessionID")
+	}
 	for rows.Next() {
 		rows.Scan(&sessionInfo.Admin, &sessionInfo.Username)
 	}
 	if sessionInfo.SessionID == "" || sessionInfo.Username == "" || sessionInfo.UserId == 0 { // Session database table is empty
-		return "Nothing in sessionID", 0, "", 0
+		return 0, "", 0, errors.New("Nothing in sessionID")
 	}
 
 	if cookieId != sessionInfo.SessionID { // Cookie Id has been tempered
-		fmt.Println("Cookie Was Altered On User Side")
-		return "Cookie Was Altered On User Side", 0, "", 0
-
+		return 0, "", 0, errors.New("Cookie Was Altered On User Side")
 	}
-	return "OK", sessionInfo.UserId, sessionInfo.Username, sessionInfo.Admin
+	return sessionInfo.UserId, sessionInfo.Username, sessionInfo.Admin, nil
 }

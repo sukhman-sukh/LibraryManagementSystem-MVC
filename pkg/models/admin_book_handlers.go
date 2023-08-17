@@ -10,15 +10,16 @@ import (
 )
 
 // Add Books to Database
-func AdminAdd(writer http.ResponseWriter, request *http.Request, db *sql.DB, bookname string, Author string, Copies string) string {
-
+func AdminAdd(writer http.ResponseWriter, request *http.Request, db *sql.DB, bookname string, Author string, Copies string) error {
 	var book types.Books
 
-	rows, _ := db.Query("SELECT * FROM books_record WHERE bookName = ?", bookname)
-
+	rows, err := db.Query("SELECT * FROM books_record WHERE bookName = ?", bookname)
+	if err != nil {
+		return err
+	}
 	if !(rows.Next()) {
 		db.Exec("INSERT INTO books_record (bookName, author, copies) VALUES (?, ? ,?)", bookname, Author, Copies)
-		return "OK"
+		return nil
 	}
 
 	if err := rows.Scan(&book.BookId, &book.BookName, &book.Author, &book.Copies); err != nil {
@@ -27,55 +28,53 @@ func AdminAdd(writer http.ResponseWriter, request *http.Request, db *sql.DB, boo
 	Copy, _ := strconv.Atoi(Copies)
 	Copy = book.Copies + Copy
 	db.Exec("UPDATE books_record SET copies = ? where bookName = ?", Copy, bookname)
-
-	return "OK"
+	return nil
 }
 
 // Remove books from the database
-func AdminRemove(writer http.ResponseWriter, request *http.Request, db *sql.DB, bookId string, Copies string) string {
-
+func AdminRemove(writer http.ResponseWriter, request *http.Request, db *sql.DB, bookId string, Copies string) {
 	db.Exec("UPDATE books_record SET copies = ? where bookId = ?", Copies, bookId)
-	return "OK"
 }
 
 // Approve checkin of books requested by the user by the admin
-func AdminCheckin(writer http.ResponseWriter, request *http.Request, db *sql.DB, requestId string) string {
-
+func AdminCheckin(writer http.ResponseWriter, request *http.Request, db *sql.DB, requestId string) error {
 	rows, err := db.Query("SELECT bookId FROM requests WHERE reqId = ?", requestId)
 	if err != nil {
-		panic(err)
+		return err
 	}
 	defer rows.Close()
 
 	for rows.Next() {
 		var bookId string
 		if err := rows.Scan(&bookId); err != nil {
-			panic(err)
+			return err
 		}
 		db.Exec("DELETE FROM requests WHERE reqId = ? ", requestId)
 
 		rows, err := db.Query("SELECT copies FROM books_record WHERE bookId = ?", bookId)
 		if err != nil {
-			panic(err)
+			return err
 		}
 		defer rows.Close()
 
 		for rows.Next() {
 			var copies int
 			if err := rows.Scan(&copies); err != nil {
-				panic(err)
+				return err
 			}
 			FinalCopies := copies + 1
 			db.Exec("UPDATE books_record SET copies =? where bookId =?", FinalCopies, bookId)
 		}
 	}
-	return "OK"
+	return nil
 }
 
 // Approve checkoiut of books requested by the user by the admin
-func AdminCheckout(writer http.ResponseWriter, request *http.Request, db *sql.DB, requestId string) string {
-
-	rows, _ := db.Query("SELECT bookId FROM requests WHERE reqId = ?", requestId)
+func AdminCheckout(writer http.ResponseWriter, request *http.Request, db *sql.DB, requestId string) error {
+	rows, err := db.Query("SELECT bookId FROM requests WHERE reqId = ?", requestId)
+	if err != nil {
+		return err
+	}
 	defer rows.Close()
 
 	for rows.Next() {
@@ -85,18 +84,20 @@ func AdminCheckout(writer http.ResponseWriter, request *http.Request, db *sql.DB
 		}
 
 		db.Exec("UPDATE requests SET status = 0 WHERE reqId = ? ", requestId)
-
-		rows, _ := db.Query("SELECT copies FROM books_record WHERE bookId = ?", bookId)
+		rows, err := db.Query("SELECT copies FROM books_record WHERE bookId = ?", bookId)
+		if err != nil {
+			return err
+		}
 		defer rows.Close()
 
 		for rows.Next() {
 			var copies int
 			if err := rows.Scan(&copies); err != nil {
-				panic(err)
+				return err
 			}
 			FinalCopies := copies - 1
 			db.Exec("UPDATE books_record SET copies =? where bookId =?", FinalCopies, bookId)
 		}
 	}
-	return "OK"
+	return nil
 }
