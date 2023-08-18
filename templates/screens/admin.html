@@ -22,10 +22,10 @@
 
     <div id="navbar">
         <ul>
-            <li ><a class="navbtn" id="available">Available</a></li>
-            <li ><a class="navbtn" id="requested">Requested Books</a></li>
-            <li ><a class="navbtn" id="issued">Requested Admins</a></li>
-            <li ><a class="navbtn" id="issuedBooks" >Issued Books</a></li>
+            <li><a class="navbtn" id="available">Available</a></li>
+            <li><a class="navbtn" id="requested">Requested Books</a></li>
+            <li><a class="navbtn" id="issued">Requested Admins</a></li>
+            <li><a class="navbtn" id="issuedBooks">Issued Books</a></li>
         </ul>
     </div>
     <div id="div1">
@@ -147,10 +147,8 @@
                             <form action="{{$link}}" method="POST">
                                 <input type="number" class="inputField" id="reqId" name="reqId"
                                     value="{{$reqEntry.RequestId}}" style="display: none;" required autofocus> <br> <br>
-
                                 <input type="submit" value="{{$Status}}" id="submit" class="statusbtn " class="reqbtn"
                                     style="background-color: limegreen;">
-
                             </form>
                         </td>
                         <td></td>
@@ -261,29 +259,29 @@
                         {{if eq $reqEntry.Status "1"}}
                         {{$color = "white"}}
                         {{$Status = "Requested Check-In"}}
-                        {{$link = "/admin"}}
+                        {{$link = "/admin/checkin"}}
                         {{end}}
 
                         {{if eq $reqEntry.Status "-1"}}
                         {{$color = "white"}}
                         {{$Status = "Requested Check-Out"}}
-                        {{$link = "/admin"}}
+                        {{$link = "/admin/checkout"}}
                         {{end}}
 
                         {{if eq $reqEntry.Status "0"}}
                         {{$link = "/checkin"}}
                         {{$Status = "Request Checkin"}}
-                        {{$type = "submit"}}
                         {{end}}
 
                         <td>
 
                             <form action="{{$link}}" method="POST">
                                 <input type="number" class="inputField" id="reqId" name="reqId"
-                                    value="{{$reqEntry.RequestId}}" style="display: none;" required autofocus> <br> <br>
+                                    value="{{$reqEntry.RequestId}}" style="display: none;" required hidden autofocus>
+                                <br> <br>
 
-                                <input type="{{$type}}" value="{{$Status}}" id="submit" class="statusbtn "
-                                    class="reqbtn" style="background-color: limegreen;">
+                                <input type="submit" value="{{$Status}}" id="submit" class="statusbtn " class="reqbtn"
+                                    style="background-color: limegreen;">
 
                             </form>
                         </td>
