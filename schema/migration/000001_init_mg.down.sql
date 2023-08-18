@@ -1,5 +1,0 @@
-DROP TABLE IF EXISTS `users`;
-DROP TABLE IF EXISTS `cookie`;
-DROP TABLE IF EXISTS `adminReq`;
-DROP TABLE IF EXISTS `books_record`;
-DROP TABLE IF EXISTS `requests`;

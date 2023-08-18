@@ -34,7 +34,6 @@
 # read -s -p "Enter MySQL password: " DB_PASSWORD
 # read -p "Enter host name: " DB_HOST
 # read -s -p "Enter MySQL Databse Name: " DB_NAME
-# DUMP_FILE="./schema/dump.sql"
 
 
 # cat << EOF > config.yaml
@@ -46,7 +45,7 @@
 # echo "config.yaml created with the variables."
 
 # # Command to run migrate files
-# migrate -path schema/migration/ -database "mysql://DB_USERNAME:DB_PASSWORD@tcp(DB_HOST:3306)/DB_NAME" -verbose up
+# migrate -path migration/ -database "mysql://DB_USERNAME:DB_PASSWORD@tcp(DB_HOST:3306)/DB_NAME" -verbose up
 
 # # Check the exit code of the mysql command
 # if [ $? -eq 0 ]; then
